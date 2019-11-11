@@ -1,0 +1,244 @@
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<center><h1 >Welcome to Robot Turtles</h1></center>
+<div class="background"></div>
+<div ng-cloak>
+    <div class="row">
+
+        <div class="col-md-6">
+            <h1 >Menu:</h1>
+
+            <!--
+            <md-input-container>
+                <label>Oxygen Factor</label>
+                <input type="number" ng-model="oxygenFactor" placeholder="oxygenFactor" id="oxygenFactor"/>
+            </md-input-container>
+            <md-input-container>
+                <label>Cave Count</label>
+                <input type="number" ng-model="caveCount" placeholder="caveCount" id="caveCount"/>
+            </md-input-container>
+            <md-input-container>
+                <label>Cave Width</label>
+                <input type="number" ng-model="caveWidth" placeholder="caveWidth" id="caveWidth"/>
+            </md-input-container>
+            -->
+
+
+
+            <md-button class="md-raised md-primary" ng-click="createGame()">
+                + Create New Game !
+            </md-button>
+            <md-input-container ng-hide="currentGame.started">
+                <label>Player Name</label>
+                <input ng-model="playerName" placehoder="Player name" id="playerName"
+                        />
+            </md-input-container>
+            <md-button class="md-raised md-primary" ng-click="addPlayer()"
+            ng-hide="currentGame.started">
+                + Add Player
+            </md-button>
+            <md-button class="md-raised md-primary" ng-click="startGame()"
+                       ng-hide="currentGame.started">
+                <i class="material-icons" style="position: absolute;top: 5px;">play_arrow</i>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Start Game
+            </md-button>
+
+
+
+            <div ng-repeat="player in currentGame.players track by $index" class="playerInfoWrapper">
+                <img ng-src="{{'content/images/turtle' + (player.playerNumber) + '.png'}}" width="40"/>
+                <b>{{player.playerName}} ({{player.direction}})</b>
+                <div ng-if="shouldSeeInfo(player) ">
+                    <br/>has cards in Hands :
+                    <span ng-repeat="card in player.handCards track by $index">
+                        <img ng-src="{{'content/images/cards/' + (card.cardName) + '.png'}}" width="40"/>
+                    </span>
+                    <br/>
+                    Program is :
+
+                    <span ng-repeat="card in player.program track by $index">
+                        <img ng-src="{{'content/images/cards/' + (card.cardName) + '.png'}}" width="40"/>
+                    </span>
+                </div>
+
+                <br/>
+                Tiles are :
+                <span ng-repeat="tile in player.tiles track by $index">
+                    <img ng-src="{{'content/images/' + (tile.panelName) + '.png'}}" width="40"/>
+                </span>
+
+
+                <div ng-if="$index == currentGame.currentIdPlayerTurn && isCurrentPlayer(currentGame.idGame, currentGame.currentIdPlayerTurn)  && !currentGame.finished && currentGame.started">
+
+                    It's your Turn ! Choose your action:
+                    <md-input-container>
+                        <label>Move</label>
+                        <input ng-model="moveEntry" placehoder="1;BYL;BB" id="moveEntry"/>
+                    </md-input-container>
+                    <md-button class="md-fab md-primary md-hue-2" ng-click="sendMove($index)">
+                        <i class="material-icons moveUp">play_arrow</i>
+                    </md-button>
+                    <br/>Help:<br/>
+                    To player your Move, enter it in the following manner:
+                    "moveNumber;additionalInfo;cardsToFolds"</br>
+                    Possible Moves are:</br>
+                    - 1. Complete Program : "1;BYL;BB"  (It will Complete Program with 3 cards of type Blue, Yellow and Laser, then fold 2 Blue Cards.)<br/>
+                    - 2. Build Wall : "2;Wall on 1-2;YL" (It will Build a Wall on line 1 and column 2 then fold 1 Yellow card and 1 Laser card.)<br/>
+                    - 3. Execute Program : "3;;PY" (It will Execute the Program then fold 1 Purple card and 1 Yellow card.)<br/>
+
+
+                    <!--
+                    <md-button class="md-fab md-primary md-hue-2" ng-click="sendMove(1, $index)">
+                        <i class="material-icons moveUp">keyboard_arrow_up</i>
+                    </md-button>
+                    <md-button class="md-fab md-primary md-hue-2" ng-click="sendMove(2, $index)">
+                        <i class="material-icons moveDown">keyboard_arrow_down</i>
+                    </md-button>
+                    <md-button class="md-fab md-primary md-hue-2" ng-click="sendMove(4, $index)">
+                        <i class="material-icons moveUp">keyboard_arrow_left</i>
+                    </md-button>
+                    <md-button class="md-fab md-primary md-hue-2" ng-click="sendMove(5, $index)">
+                        <i class="material-icons moveDown">keyboard_arrow_right</i>
+                    </md-button>
+                    <md-button class="md-fab md-primary md-hue-2" ng-click="sendMove(3, $index)">
+                        <i class="material-icons movePick">add_box</i>
+                    </md-button>
+                    -->
+
+
+                </div>
+            </div>
+            <br/>
+            <md-list-item class="md-3-line" ng-repeat="game in games" ng-click="selectGame(game)"
+                          ng-class='game == currentGame.idGame ? "selectedGame" : ""'>
+
+                <div class="md-list-item-text" layout="column">
+                    <h3>=> Game {{ game }}</h3>
+                </div>
+            </md-list-item>
+        </div>
+
+        <div class="col-md-6" >
+            <div style="margin: 10px; ">
+                <h3>=> Game {{ currentIdGame }} </h3>
+
+                <div ng-if="currentGame.finished">
+                    <div ng-repeat="player in currentGame.leaderboard">
+                        - {{ $index + 1}}. ({{player.name}}) <span ng-if="$index == 0">Winner !</span>
+                    </div>
+                </div>
+
+                <table ng-if="currentGame.started">
+                    <tbody>
+                        <tr>
+                            <td></td>
+                            <td class="indexCell" ng-repeat="n in '01234567'">{{n}}</td>
+                            <!--<td class="indexCell" ng-repeat="n in 'ABCDEFGH'">{{n}}</td>-->
+                        </tr>
+                        <tr ng-repeat="line in currentGame.grid.grid track by $index">
+                            <td class="indexCell">{{$index}}</td>
+                            <td ng-repeat="cell in line track by $index">
+                                <div ng-if="cell.panelName == 'PLAYER'" class="playerContainer">
+                                    <img ng-src="{{'content/images/turtle' + (cell.playerNumber) + '.png'}}" width="40"/>
+                                    <br/>
+                                    <i ng-if="cell.direction == 'NORTH'" class="material-icons">arrow_upward</i>
+                                    <i ng-if="cell.direction == 'SOUTH'" class="material-icons">arrow_downward</i>
+                                    <i ng-if="cell.direction == 'WEST'" class="material-icons">arrow_back</i>
+                                    <i ng-if="cell.direction == 'EAST'" class="material-icons">arrow_forward</i>
+
+                                </div>
+
+                                <div ng-if="cell.panelName != 'PLAYER' && cell.panelName != 'EMPTY'" class="playerContainer">
+                                    <img ng-src="{{'content/images/' + (cell.panelName) + '.png'}}" width="40"/>
+                                </div>
+
+                                <div ng-repeat="chest in cell.chests" class="chestContainer">
+                                    <img src="content/images/chest.svg" width="40"/>
+                                    <span>{{chest.treasureCount}}</span>
+                                </div>
+                                <div ng-repeat="player in getPlayersInCell($index, $parent.$index, $parent.$parent.$index)">
+                                    <img ng-src="{{'content/images/diver' + (player.index %2) + '.svg'}}" width="40"/>
+                                    ({{player.name}})
+                                </div>
+
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<style>
+    tbody.odd {
+        background-color: lightgrey;
+    }
+    td {
+        border: black 2px solid;
+        padding: 4px;
+        min-width: 50px;
+    }
+     .oxygenText {
+        position: absolute;
+        text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+        color: white;
+        top: 17px;
+        left: 18px;
+        font-size: 23px;
+    }
+    .chestContainer {
+        position: relative;
+        height: 50px;
+    }
+    .chestContainer img {
+        position: absolute;
+    }
+    .chestContainer span {
+        position: absolute;
+        text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+        color: white;
+        top: 15px;
+        left: 15px;
+        font-size: 21px;
+    }
+    td {
+        height: 47px;
+    }
+
+    .playerInfoWrapper {
+        border: grey 1px solid;
+        padding: 5px;
+        margin: 5px;
+        border-radius: 5px;
+    }
+    .moveUp {
+        margin-top: 3px;
+        margin-left: -3px;
+        font-size: 50px !important;
+    }
+    .moveDown {
+        margin-top: 6px;
+        margin-left: -3px;
+        font-size: 50px !important;
+    }
+    .movePick {
+        margin-top: 7px;
+        margin-left: 2px;
+        font-size: 42px !important;
+    }
+    .selectedGame {
+        background-color: rgb(220,220,220);
+    }
+    .background {
+        min-height: 800px;
+        min-width: 700px;
+        background:url(content/images/background.jpeg) 0 0 no-repeat;
+        position: absolute;
+        right: 0px;
+        opacity: 0.9;
+    }
+    .indexCell {
+        text-align: center;
+    }
+</style>
