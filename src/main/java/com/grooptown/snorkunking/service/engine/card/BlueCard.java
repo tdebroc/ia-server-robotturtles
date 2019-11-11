@@ -27,12 +27,13 @@ public class BlueCard extends Card {
             currentPlayer.reverseDirection();
         } else if (game.getGrid().getPanel(nextPosition).getClass().equals(Player.class)) {
             Player touchedPlayer = (Player) game.getGrid().getPanel(nextPosition);
-            touchedPlayer.touchTurtleOrLaser(game);
-            currentPlayer.touchTurtleOrLaser(game);
+            touchedPlayer.touchTurtle(game);
+            currentPlayer.touchTurtle(game);
         } else if (game.getGrid().getPanel(nextPosition).getClass().equals(RubyPanel.class)) {
             currentPlayer.setRubyReached(true);
             System.out.println("Player " + currentPlayer.getPlayerNumber() + " has reached a Ruby !");
             game.getGrid().makeCellEmpty(currentPosition);
+            game.getLeaderBoard().add(game.getCurrentPlayer());
         } else {
             currentPlayer.moveTo(nextPosition, game.getGrid());
         }

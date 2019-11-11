@@ -30,11 +30,11 @@ public class LaserCard extends Card {
             }
             if (game.getGrid().getPanel(nextLaserPosition).getClass().equals(Player.class)) {
                 Player touchedPlayer = (Player) game.getGrid().getPanel(nextLaserPosition);
-                touchedPlayer.touchTurtleOrLaser(game);
+                touchedPlayer.touchLaser(game);
                 return;
             }
             if (game.getGrid().getPanel(nextLaserPosition).getClass().equals(RubyPanel.class)) {
-                game.getCurrentPlayer().touchTurtleOrLaser(game);
+                game.getCurrentPlayer().touchLaser(game);
                 return;
             }
             nextLaserPosition = getNextPosition(nextLaserPosition, laserDirection);

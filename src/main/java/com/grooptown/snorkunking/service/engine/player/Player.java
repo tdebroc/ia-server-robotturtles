@@ -146,7 +146,11 @@ public class Player implements Panel {
         grid.placePlayer(nextPosition, this);
     }
 
-    public void touchTurtleOrLaser(Game game) {
+    public void touchTurtle(Game game) {
+        backToInitialPosition(game.getGrid());
+    }
+
+    public void touchLaser(Game game) {
         if (game.getPlayers().size() > 2) {
             backToInitialPosition(game.getGrid());
         } else {

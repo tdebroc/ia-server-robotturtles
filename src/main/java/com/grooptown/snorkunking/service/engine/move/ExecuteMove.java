@@ -20,10 +20,8 @@ public class ExecuteMove extends Move {
     @Override
     public void playMove() {
         for (Card card : game.getCurrentPlayer().getProgram()) {
-            if (!game.getCurrentPlayer().isRubyReached()) {
-                card.play(game);
-            } else {
-                game.getLeaderBoard().add(game.getCurrentPlayer());
+            card.play(game);
+            if (game.getCurrentPlayer().isRubyReached()) {
                 break;
             }
         }

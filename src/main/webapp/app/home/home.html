@@ -123,7 +123,7 @@
 
                 <div ng-if="currentGame.finished">
                     <div ng-repeat="player in currentGame.leaderboard">
-                        - {{ $index + 1}}. ({{player.name}}) <span ng-if="$index == 0">Winner !</span>
+                        - {{ $index + 1}}. ({{player.playerName}}) <span ng-if="$index == 0">Winner !</span>
                     </div>
                 </div>
 
