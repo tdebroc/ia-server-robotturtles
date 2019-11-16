@@ -33,6 +33,7 @@ public class CompleteMove extends Move {
 
     @Override
     public void playMove() {
+        game.addMoveDescription(" - Player added " + cardsToAdd.size() + " cards to it's program \n");
         game.getCurrentPlayer().removeCardsFromHand(cardsToAdd);
         game.getCurrentPlayer().addCardsToProgram(cardsToAdd);
     }

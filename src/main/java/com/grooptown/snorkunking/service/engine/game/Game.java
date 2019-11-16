@@ -10,14 +10,11 @@ import com.grooptown.snorkunking.service.engine.grid.RubyPanel;
 import com.grooptown.snorkunking.service.engine.move.*;
 import com.grooptown.snorkunking.service.engine.player.Player;
 import com.grooptown.snorkunking.service.engine.player.Position;
-import com.grooptown.snorkunking.service.engine.tile.IceTile;
 import com.grooptown.snorkunking.service.engine.tile.WallTile;
 
 import java.util.*;
 
 import static com.grooptown.snorkunking.service.engine.card.Card.cardsToString;
-import static com.grooptown.snorkunking.service.engine.card.CardService.hasEnoughCards;
-import static com.grooptown.snorkunking.service.engine.card.CardService.isValidCardsEntry;
 import static com.grooptown.snorkunking.service.engine.player.Player.MAX_CARD_ALLOWED_IN_HAND;
 
 /**
@@ -30,6 +27,8 @@ public class Game {
 
     private int currentPlayerIndex = 0;
 
+    private int turnCount = 0;
+
     private final List<Player> players = new ArrayList<>();
 
     private final List<Player> leaderBoard = new ArrayList<>();
@@ -37,6 +36,10 @@ public class Game {
     private boolean finished = false;
 
     private boolean started = false;
+
+    private LinkedList<MoveRecord> moveRecords = new LinkedList<>();
+
+    private LinkedList<Grid> gridHistory = new LinkedList<>();
 
     private Grid grid;
 
@@ -133,10 +136,25 @@ public class Game {
     //==================================================================================================================
 
     public void playMove(AllMove allMove) {
+        addToGridHistory();
+        addToMoveRecord(allMove);
         allMove.getMove().playMove();
         foldAndPickNewCards(allMove);
         checkIfGameIsFinished();
         selectNextPlayer();
+        turnCount++;
+    }
+
+    private void addToMoveRecord(AllMove allMove) {
+        MoveRecord moveRecord = new MoveRecord();
+        moveRecords.add(moveRecord);
+        moveRecord.setPlayerName(getCurrentPlayer().getPlayerName());
+        moveRecord.setTitle(allMove.getMove().getClass().getSimpleName());
+        moveRecord.setTurnNumber(turnCount);
+    }
+
+    private void addToGridHistory() {
+        gridHistory.add(grid.cloneGrid());
     }
 
     private void selectNextPlayer() {
@@ -150,6 +168,7 @@ public class Game {
         while (getCurrentPlayer().getHandCards().size() < MAX_CARD_ALLOWED_IN_HAND) {
             getCurrentPlayer().pickCardInDeck();
         }
+        moveRecords.getLast().setNumberOfCardFold(allMove.getCardToFold().size());
     }
 
     private void checkIfGameIsFinished() {
@@ -300,5 +319,21 @@ public class Game {
 
     public List<Player> getLeaderBoard() {
         return leaderBoard;
+    }
+
+    public void addMoveDescription(String moveDescription) {
+        moveRecords.getLast().getDescription().add(moveDescription);
+    }
+
+    public void setGrid(Grid grid) {
+        this.grid = grid;
+    }
+
+    public LinkedList<Grid> getGridHistory() {
+        return gridHistory;
+    }
+
+    public LinkedList<MoveRecord> getMoveRecords() {
+        return moveRecords;
     }
 }

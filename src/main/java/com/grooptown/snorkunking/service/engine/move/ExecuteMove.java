@@ -20,6 +20,7 @@ public class ExecuteMove extends Move {
     @Override
     public void playMove() {
         for (Card card : game.getCurrentPlayer().getProgram()) {
+            game.addMoveDescription(" - Playing " + card.getCardName() + "\n");
             card.play(game);
             if (game.getCurrentPlayer().isRubyReached()) {
                 break;

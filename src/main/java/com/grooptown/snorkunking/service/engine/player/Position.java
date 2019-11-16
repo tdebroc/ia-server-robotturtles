@@ -33,4 +33,9 @@ public class Position {
     public int hashCode() {
         return Objects.hash(line, column);
     }
+
+    @Override
+    public String toString() {
+        return "Position{" + "" + line + ", " + column + '}';
+    }
 }

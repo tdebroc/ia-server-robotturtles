@@ -1,28 +1,10 @@
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <center><h1 >Welcome to Robot Turtles</h1></center>
-<div class="background"></div>
 <div ng-cloak>
     <div class="row">
 
         <div class="col-md-6">
             <h1 >Menu:</h1>
-
-            <!--
-            <md-input-container>
-                <label>Oxygen Factor</label>
-                <input type="number" ng-model="oxygenFactor" placeholder="oxygenFactor" id="oxygenFactor"/>
-            </md-input-container>
-            <md-input-container>
-                <label>Cave Count</label>
-                <input type="number" ng-model="caveCount" placeholder="caveCount" id="caveCount"/>
-            </md-input-container>
-            <md-input-container>
-                <label>Cave Width</label>
-                <input type="number" ng-model="caveWidth" placeholder="caveWidth" id="caveWidth"/>
-            </md-input-container>
-            -->
-
-
 
             <md-button class="md-raised md-primary" ng-click="createGame()">
                 + Create New Game !
@@ -49,7 +31,7 @@
                 <b>{{player.playerName}} ({{player.direction}})</b>
                 <div ng-if="shouldSeeInfo(player) ">
                     <br/>has cards in Hands :
-                    <span ng-repeat="card in player.handCards track by $index">
+                    <span ng-repeat="card in player.handCards track by $index" ng-click="clickOnCardInHand($index, $parent.$index)">
                         <img ng-src="{{'content/images/cards/' + (card.cardName) + '.png'}}" width="40"/>
                     </span>
                     <br/>
@@ -62,13 +44,14 @@
 
                 <br/>
                 Tiles are :
-                <span ng-repeat="tile in player.tiles track by $index">
+                <span ng-repeat="tile in player.tiles track by $index" ng-click="chooseWall(tile.panelName)">
                     <img ng-src="{{'content/images/' + (tile.panelName) + '.png'}}" width="40"/>
                 </span>
 
 
                 <div ng-if="$index == currentGame.currentIdPlayerTurn && isCurrentPlayer(currentGame.idGame, currentGame.currentIdPlayerTurn)  && !currentGame.finished && currentGame.started">
 
+                    <!--
                     It's your Turn ! Choose your action:
                     <md-input-container>
                         <label>Move</label>
@@ -77,34 +60,51 @@
                     <md-button class="md-fab md-primary md-hue-2" ng-click="sendMove($index)">
                         <i class="material-icons moveUp">play_arrow</i>
                     </md-button>
-                    <br/>Help:<br/>
-                    To play your Move, enter it in the following manner:
-                    "moveNumber;additionalInfo;cardsToFolds"</br>
-                    Possible Moves are:</br>
-                    - 1. Complete Program : "1;BYL;BB"  (It will Complete Program with 3 cards of type Blue, Yellow and Laser, then fold 2 Blue Cards.)<br/>
-                    - 2. Build Wall : "2;Wall on 1-2;YL" (It will Build a Wall on line 1 and column 2 then fold 1 Yellow card and 1 Laser card.). For Ice: "2;Ice on 1-2;YL"<br/>
-                    - 3. Execute Program : "3;;PY" (It will Execute the Program then fold 1 Purple card and 1 Yellow card.)<br/>
-
-
-                    <!--
-                    <md-button class="md-fab md-primary md-hue-2" ng-click="sendMove(1, $index)">
-                        <i class="material-icons moveUp">keyboard_arrow_up</i>
-                    </md-button>
-                    <md-button class="md-fab md-primary md-hue-2" ng-click="sendMove(2, $index)">
-                        <i class="material-icons moveDown">keyboard_arrow_down</i>
-                    </md-button>
-                    <md-button class="md-fab md-primary md-hue-2" ng-click="sendMove(4, $index)">
-                        <i class="material-icons moveUp">keyboard_arrow_left</i>
-                    </md-button>
-                    <md-button class="md-fab md-primary md-hue-2" ng-click="sendMove(5, $index)">
-                        <i class="material-icons moveDown">keyboard_arrow_right</i>
-                    </md-button>
-                    <md-button class="md-fab md-primary md-hue-2" ng-click="sendMove(3, $index)">
-                        <i class="material-icons movePick">add_box</i>
-                    </md-button>
                     -->
-
-
+                    It's Your Turn to play !
+                    <div ng-if="steps.chooseMoveStep">
+                        Choose Your Move:
+                        <md-button class="md-fab md-primary md-hue-2" ng-click="chooseMove(2, $index)">
+                            <i class="material-icons buildMove">build</i>
+                        </md-button>
+                        <md-button class="md-fab md-primary md-hue-2" ng-click="chooseMove(1, $index)">
+                            <i class="material-icons addCardMove">playlist_add</i>
+                        </md-button>
+                        <md-button class="md-fab md-primary md-hue-2" ng-click="chooseMove(3, $index)">
+                            <i class="material-icons playCardsdMove">playlist_play</i>
+                        </md-button>
+                    </div>
+                    <div ng-if="steps.buildMoveStep">
+                        Choose your wall and then click on the cell of the grid where you want to place it.<br/>
+                        <span ng-if="wallType">
+                            You have chosen a:
+                            <img ng-src="{{'content/images/' + (wallType) + '.png'}}" width="40"/>
+                        </span>
+                        When cell is chosen, press confirm:
+                        <md-button class="md-fab md-primary md-hue-2" ng-click="validateWallPosition()">
+                            <i class="material-icons validateWallPosition">done</i>
+                        </md-button>
+                    </div>
+                    <div ng-if="steps.chooseCardsStep">
+                        Please choose your cards to add to the program
+                        <span ng-repeat="card in currentProgram track by $index" ng-click="clickOnCardProgram($index, $parent.$index)">
+                            <img ng-src="{{'content/images/cards/' + (card.cardName) + '.png'}}" width="40"/>
+                        </span>
+                        When cards are chosen, press confirm:
+                        <md-button class="md-fab md-primary md-hue-2" ng-click="validateCardProgram(playerIndex)">
+                            <i class="material-icons validateWallPosition">done</i>
+                        </md-button>
+                    </div>
+                    <div ng-if="steps.foldCardsStep">
+                        Choose your card to fold.<br/>
+                        <span ng-repeat="card in currentCardToFold track by $index" ng-click="clickOnCardToFold($index, $parent.$index)">
+                            <img ng-src="{{'content/images/cards/' + (card.cardName) + '.png'}}" width="40"/>
+                        </span>
+                        When cards are chosen, press confirm:
+                        <md-button class="md-fab md-primary md-hue-2" ng-click="validateCardToFold($index)">
+                            <i class="material-icons validateWallPosition">done</i>
+                        </md-button>
+                    </div>
                 </div>
             </div>
             <br/>
@@ -117,7 +117,7 @@
             </md-list-item>
         </div>
 
-        <div class="col-md-6" >
+        <div class="col-md-6 background">
             <div style="margin: 10px; ">
                 <h3>=> Game {{ currentIdGame }} </h3>
 
@@ -136,7 +136,10 @@
                         </tr>
                         <tr ng-repeat="line in currentGame.grid.grid track by $index">
                             <td class="indexCell">{{$index}}</td>
-                            <td ng-repeat="cell in line track by $index">
+                            <td ng-repeat="cell in line track by $index"
+                                ng-click="chooseWallPosition($parent.$index, $index)"
+                                ng-class="{'emptyCell': cell.panelName == 'EMPTY'}"
+                            >
                                 <div ng-if="cell.panelName == 'PLAYER'" class="playerContainer">
                                     <img ng-src="{{'content/images/turtle' + (cell.playerNumber) + '.png'}}" width="40"/>
                                     <br/>
@@ -151,19 +154,19 @@
                                     <img ng-src="{{'content/images/' + (cell.panelName) + '.png'}}" width="40"/>
                                 </div>
 
-                                <div ng-repeat="chest in cell.chests" class="chestContainer">
-                                    <img src="content/images/chest.svg" width="40"/>
-                                    <span>{{chest.treasureCount}}</span>
-                                </div>
-                                <div ng-repeat="player in getPlayersInCell($index, $parent.$index, $parent.$parent.$index)">
-                                    <img ng-src="{{'content/images/diver' + (player.index %2) + '.svg'}}" width="40"/>
-                                    ({{player.name}})
-                                </div>
-
                             </td>
                         </tr>
                     </tbody>
                 </table>
+                <md-card class="move-container">
+                    <div ng-repeat="record in currentGame.moveRecords  | orderBy: reverse:true" >
+                        <b>Turn {{record.turnNumber}}. {{record.playerName}} play {{ record.title }}</b><br/>
+                        <div ng-repeat="desc in record.description track by $index">
+                            {{desc}}
+                        </div>
+                        <span ng-if="record.numberOfCardFold != 0"> Player has fold {{record.numberOfCardFold}} cards.</span>
+                    </div>
+                </md-card>
             </div>
         </div>
     </div>
@@ -233,12 +236,44 @@
     .background {
         min-height: 800px;
         min-width: 700px;
-        background:url(content/images/background.jpeg) 0 0 no-repeat;
+        #background:url(content/images/background.jpeg) 0 0 no-repeat;
         position: absolute;
         right: 0px;
         opacity: 0.9;
     }
     .indexCell {
         text-align: center;
+    }
+    .move-container {
+        margin-right: 60px;
+        padding: 5px;
+        height: 150px;
+        overflow: scroll;
+        height: 150px;
+        width: 500px;
+        opacity: 0.9;
+        overflow: scroll;
+        position: fixed;
+        bottom: 0px;
+        z-index: 100;
+    }
+
+    .buildMove, .validateWallPosition {
+        margin-top: 6px;
+        margin-left: -3px;
+        font-size: 40px !important;
+    }
+    .addCardMove {
+        margin-top: 3px;
+        margin-left: 0px;
+        font-size: 50px !important;
+    }
+    .playCardsdMove {
+        margin-top: 3px;
+        margin-left: px;
+        font-size: 50px !important;
+    }
+    .emptyCell {
+        cursor: pointer;
     }
 </style>

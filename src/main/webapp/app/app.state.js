@@ -5,7 +5,7 @@
         .module('iaserversnorkunkingApp')
         .filter('newlines', function () {
            return function(text) {
-             return text.replace(/(&#13;)?&#10;/g, '<br/>');
+             return text.replace(/(&#13;)?&#10;/g, 'pp<br/>');
            }
          })
         .filter('range', function() {

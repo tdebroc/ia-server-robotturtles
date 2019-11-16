@@ -187,4 +187,8 @@ public class Player implements Panel {
     public void removeCardsFromHand(List<Card> cardsToAdd) {
         CardService.removeCardsFromHand(this.getHandCards(), cardsToAdd);
     }
+
+    public Position getInitialPosition() {
+        return initialPosition;
+    }
 }

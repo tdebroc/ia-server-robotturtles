@@ -101,6 +101,8 @@ public class BuildWallMove extends Move {
 
     @Override
     public void playMove() {
+        game.addMoveDescription(" - Player added a Wall of type " + tileToBuild.toAscii()
+            + " in cell [" + line + "," + column + "] \n");
         game.getGrid().getGrid()[line][column] = tileToBuild;
         game.getCurrentPlayer().removeTile(tileToBuild);
     }

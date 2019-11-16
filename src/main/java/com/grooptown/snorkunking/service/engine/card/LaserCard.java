@@ -22,18 +22,22 @@ public class LaserCard extends Card {
         Position nextLaserPosition = getNextPosition(position, laserDirection);
         while (!game.getGrid().isOutOfBound(nextLaserPosition)) {
             if (game.getGrid().getPanel(nextLaserPosition).getClass().equals(IceTile.class)) {
+                game.addMoveDescription("Laser has hit an Ice Wall on " + nextLaserPosition + ". Ice Wall has been destroyed. \n");
                 game.getGrid().makeCellEmpty(nextLaserPosition);
                 return;
             }
             if (game.getGrid().getPanel(nextLaserPosition).getClass().equals(WallTile.class)) {
+                game.addMoveDescription("Laser has hit a Brick Wall on " + nextLaserPosition + ". Ice Wall has no effect. \n");
                 return;
             }
             if (game.getGrid().getPanel(nextLaserPosition).getClass().equals(Player.class)) {
                 Player touchedPlayer = (Player) game.getGrid().getPanel(nextLaserPosition);
                 touchedPlayer.touchLaser(game);
+                game.addMoveDescription("Laser has hit a turtle : " + touchedPlayer.getPlayerName() + " on " + nextLaserPosition + ". \n");
                 return;
             }
             if (game.getGrid().getPanel(nextLaserPosition).getClass().equals(RubyPanel.class)) {
+                game.addMoveDescription("Laser has hit a ruby. Laser is reflected and go back to current player. \n");
                 game.getCurrentPlayer().touchLaser(game);
                 return;
             }

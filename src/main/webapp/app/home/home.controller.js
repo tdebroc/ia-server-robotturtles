@@ -89,9 +89,6 @@
         }
 
 
-
-
-
         /**
          * Refresh List of Games.
          */
@@ -158,16 +155,18 @@
         }
 
         $scope.sendMove = function(idPlayerTurn) {
-            $scope.moveEntry = $("#moveEntry").val();
             var playerUUID = $scope.currentPlayers[getKey($scope.currentIdGame, idPlayerTurn)];
-            IAConnectorService.sendMove(playerUUID, $scope.moveEntry).then(
+            console.log($scope.moveToSend);
+            IAConnectorService.sendMove(playerUUID, $scope.moveToSend).then(
                 function(response) {
                     refreshCurrentGame();
                 }, function(response) {
-                    console.log("response", response)
+                    console.log("response", response);
+                    refreshCurrentGame();
                     alert(JSON.stringify(response.data));
                 }
             )
+            initMove();
         }
 
         function getKey(idGame, idPlayerTurn) {
@@ -208,6 +207,110 @@
                 }
             }
             return playersAtSurface;
+        }
+
+        /**
+         * Choose Moves:
+         */
+        $scope.steps = {
+            "chooseMoveStep" : true,
+            "buildMoveStep" : false,
+            "chooseCardsStep" : false,
+            "foldCardsStep" : false
+        }
+
+        function changeStep(stepName) {
+            for (var step in $scope.steps) {
+                $scope.steps[step] = false;
+            }
+            $scope.steps[stepName] = true;
+        }
+
+        function initMove() {
+            changeStep("chooseMoveStep");
+            $scope.moveToSend = "";
+            $scope.wallType = "";
+            $scope.wallPosition;
+            $scope.currentProgram = [];
+            $scope.currentCardToFold = [];
+        }
+        initMove();
+        $scope.chooseMove = function(moveNumber) {
+            $scope.moveToSend = moveNumber + ";"
+            if (moveNumber == 1) {
+                changeStep("chooseCardsStep");
+            } else if (moveNumber == 2) {
+                changeStep("buildMoveStep");
+            } else {
+                $scope.moveToSend += ";"
+                changeStep("foldCardsStep");
+            }
+        }
+
+        $scope.chooseWall = function(WallType) {
+            $scope.wallType = WallType;
+        }
+
+        $scope.chooseWallPosition = function(line, column) {
+            if (!($scope.wallPosition && $scope.wallPosition.line == line && $scope.wallPosition.column == column)) {
+                if ($scope.currentGame.grid.grid[line][column].panelName != 'EMPTY') {
+                    return;
+                }
+            }
+            if ($scope.wallPosition) {
+                $scope.currentGame.grid.grid[$scope.wallPosition.line][$scope.wallPosition.column].panelName = "EMPTY";
+            }
+            console.log(line, column)
+            $scope.wallPosition = {
+                "line" : line,
+                "column" : column
+            };
+            $scope.currentGame.grid.grid[line][column] = { panelName : $scope.wallType}
+        }
+
+        $scope.validateWallPosition = function() {
+            $scope.moveToSend += upperCaseFirst($scope.wallType) + " on " + $scope.wallPosition.line + "-" + $scope.wallPosition.column + ";";
+            changeStep("foldCardsStep");
+        }
+
+        $scope.clickOnCardInHand = function(cardIndex, playerIndex) {
+            var card = $scope.currentGame.players[playerIndex].handCards[cardIndex];
+            if ($scope.steps.chooseCardsStep) {
+                $scope.currentGame.players[playerIndex].handCards.splice(cardIndex, 1);
+                $scope.currentProgram.push(card);
+            } else if ($scope.steps.foldCardsStep) {
+                $scope.currentGame.players[playerIndex].handCards.splice(cardIndex, 1);
+                $scope.currentCardToFold.push(card);
+            }
+        }
+
+        $scope.clickOnCardProgram = function(cardIndex, playerIndex) {
+            $scope.currentGame.players[playerIndex].handCards.push($scope.currentProgram[cardIndex]);
+            $scope.currentProgram.splice(cardIndex, 1);
+        }
+
+        $scope.clickOnCardToFold = function(cardIndex, playerIndex) {
+            $scope.currentGame.players[playerIndex].handCards.push($scope.currentCardToFold[cardIndex]);
+            $scope.currentCardToFold.splice(cardIndex, 1);
+        }
+
+        $scope.validateCardToFold = function(playerIndex) {
+            for (var i = 0; i < $scope.currentCardToFold.length; i++) {
+                $scope.moveToSend += $scope.currentCardToFold[i].cardName.charAt(0);
+            }
+            $scope.sendMove(playerIndex);
+        }
+
+        $scope.validateCardProgram = function() {
+            for (var i = 0; i < $scope.currentProgram.length; i++) {
+                $scope.moveToSend += $scope.currentProgram[i].cardName.charAt(0);
+            }
+            $scope.moveToSend += ";";
+            changeStep("foldCardsStep")
+        }
+
+        function upperCaseFirst(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
         }
 
     }

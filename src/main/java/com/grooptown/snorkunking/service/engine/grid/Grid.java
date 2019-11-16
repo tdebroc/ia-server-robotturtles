@@ -65,4 +65,12 @@ public class Grid {
     public Panel getPanel(Position position) {
         return grid[position.getLine()][position.getColumn()];
     }
+
+    public Grid cloneGrid() {
+        Grid newGrid = new Grid(grid.length);
+        for (int i = 0; i < grid.length; i++) {
+            System.arraycopy(grid[i], 0, newGrid.getGrid()[i], 0, grid[0].length);
+        }
+        return newGrid;
+    }
 }

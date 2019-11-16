@@ -12,5 +12,6 @@ public class YellowCard extends Card {
     public void play(Game game) {
         DirectionEnum nextDirection = MovementService.getNextPosition(game.getCurrentPlayer().getDirection(), false);
         game.getCurrentPlayer().setDirection(nextDirection);
+        game.addMoveDescription("New Direction of the turtle is " + nextDirection + " \n");
     }
 }
