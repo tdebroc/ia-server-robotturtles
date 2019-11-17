@@ -1,11 +1,9 @@
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-<center><h1 >Welcome to Robot Turtles</h1></center>
+<center><h1>Welcome to Robot Turtles</h1></center>
 <div ng-cloak>
     <div class="row">
 
         <div class="col-md-6">
-            <h1 >Menu:</h1>
-
             <md-button class="md-raised md-primary" ng-click="createGame()">
                 + Create New Game !
             </md-button>
@@ -112,14 +110,19 @@
                           ng-class='game == currentGame.idGame ? "selectedGame" : ""'>
 
                 <div class="md-list-item-text" layout="column">
-                    <h3>=> Game {{ game }}</h3>
+                    <h3>Game {{ game }}</h3>
                 </div>
             </md-list-item>
         </div>
 
         <div class="col-md-6 background">
             <div style="margin: 10px; ">
-                <h3>=> Game {{ currentIdGame }} </h3>
+                <h3>Game {{ currentIdGame }} - Turn {{ currentGame.turnCount }}
+                    <md-button class="md-raised md-primary" ng-click="changeGrid(-1)"
+                               ng-if="currentGame.turnCount != 0"> < </md-button>
+                    <md-button class="md-raised md-primary" ng-click="changeGrid(+1)"
+                               ng-if="currentGame.turnCount != currentGame.gridHistory.length"> > </md-button>
+                </h3>
 
                 <div ng-if="currentGame.finished">
                     <div ng-repeat="player in currentGame.leaderboard">
@@ -134,7 +137,7 @@
                             <td class="indexCell" ng-repeat="n in '01234567'">{{n}}</td>
                             <!--<td class="indexCell" ng-repeat="n in 'ABCDEFGH'">{{n}}</td>-->
                         </tr>
-                        <tr ng-repeat="line in currentGame.grid.grid track by $index">
+                        <tr ng-repeat="line in getGridToDisplay() track by $index">
                             <td class="indexCell">{{$index}}</td>
                             <td ng-repeat="cell in line track by $index"
                                 ng-click="chooseWallPosition($parent.$index, $index)"
@@ -154,12 +157,14 @@
                                     <img ng-src="{{'content/images/' + (cell.panelName) + '.png'}}" width="40"/>
                                 </div>
 
+
                             </td>
                         </tr>
                     </tbody>
                 </table>
                 <md-card class="move-container">
-                    <div ng-repeat="record in currentGame.moveRecords  | orderBy: reverse:true" >
+                    <div ng-repeat="record in currentGame.moveRecords  | orderBy: reverse:true"
+                         id="moveRecords{{record.turnNumber}}">
                         <b>Turn {{record.turnNumber}}. {{record.playerName}} play {{ record.title }}</b><br/>
                         <div ng-repeat="desc in record.description track by $index">
                             {{desc}}
@@ -236,7 +241,7 @@
     .background {
         min-height: 800px;
         min-width: 700px;
-        background:url(content/images/background.jpeg) 0 0 no-repeat;
+        #background:url(content/images/background.jpeg) 0 0 no-repeat;
         position: absolute;
         right: 0px;
         opacity: 0.9;

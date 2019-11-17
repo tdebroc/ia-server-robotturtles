@@ -336,4 +336,8 @@ public class Game {
     public LinkedList<MoveRecord> getMoveRecords() {
         return moveRecords;
     }
+
+    public int getTurnCount() {
+        return turnCount;
+    }
 }

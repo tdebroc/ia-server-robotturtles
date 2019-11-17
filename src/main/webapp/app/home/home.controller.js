@@ -11,12 +11,6 @@
     function HomeController ($scope, Principal, LoginService, $state,
                             IAConnectorGame, IAConnectorService, IAConnectorSocketService) {
 
-        $scope.moves = ["Go Up", "Go Down", "Pick Treasure"];
-        /*$scope.oxygenFactor = 2.0
-        $scope.caveCount = 3
-        $scope.caveWidth = 1;*/
-
-
         $scope.currentPlayers = {};
         function loadCurrentPlayers() {
             var currentPlayerString = localStorage.getItem("currentPlayers");
@@ -209,9 +203,9 @@
             return playersAtSurface;
         }
 
-        /**
-         * Choose Moves:
-         */
+        // ============================================================================================================
+        // Choose Moves:
+        // ============================================================================================================
         $scope.steps = {
             "chooseMoveStep" : true,
             "buildMoveStep" : false,
@@ -312,6 +306,26 @@
         function upperCaseFirst(string) {
             return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
         }
+
+        // ============================================================================================================
+        // Grid :
+        // ============================================================================================================
+
+
+        $scope.changeGrid = function(inc) {
+            $scope.currentGame.turnCount = $scope.currentGame.turnCount + inc;
+            document.querySelector("#moveRecords" + $scope.currentGame.turnCount).scrollIntoView({ behavior: 'smooth' })
+        }
+
+        $scope.getGridToDisplay = function() {
+            if ($scope.currentGame.turnCount == $scope.currentGame.gridHistory.length) {
+                return $scope.currentGame.grid.grid;
+            } else {
+                return $scope.currentGame.gridHistory[$scope.currentGame.turnCount].grid;
+            }
+        }
+
+
 
     }
 
