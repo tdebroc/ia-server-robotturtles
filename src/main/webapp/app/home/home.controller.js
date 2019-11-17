@@ -79,6 +79,7 @@
                     console.log(currentGame);
                     $scope.currentIdGame = idGame;
                     $scope.currentGame = currentGame;
+                    initMove();
                  });;
         }
 
@@ -224,7 +225,7 @@
             changeStep("chooseMoveStep");
             $scope.moveToSend = "";
             $scope.wallType = "";
-            $scope.wallPosition;
+            $scope.wallPosition = undefined;
             $scope.currentProgram = [];
             $scope.currentCardToFold = [];
         }
@@ -246,6 +247,9 @@
         }
 
         $scope.chooseWallPosition = function(line, column) {
+            if (!$scope.steps.buildMoveStep) {
+                return;
+            }
             if (!($scope.wallPosition && $scope.wallPosition.line == line && $scope.wallPosition.column == column)) {
                 if ($scope.currentGame.grid.grid[line][column].panelName != 'EMPTY') {
                     return;
@@ -270,6 +274,10 @@
         $scope.clickOnCardInHand = function(cardIndex, playerIndex) {
             var card = $scope.currentGame.players[playerIndex].handCards[cardIndex];
             if ($scope.steps.chooseCardsStep) {
+                if ($scope.currentProgram.length + $scope.currentGame.players[playerIndex].program.length >= 5) {
+                    alert("You already have 5 cards  in your program.");
+                    return;
+                }
                 $scope.currentGame.players[playerIndex].handCards.splice(cardIndex, 1);
                 $scope.currentProgram.push(card);
             } else if ($scope.steps.foldCardsStep) {
@@ -300,7 +308,7 @@
                 $scope.moveToSend += $scope.currentProgram[i].cardName.charAt(0);
             }
             $scope.moveToSend += ";";
-            changeStep("foldCardsStep")
+            changeStep("foldCardsStep");
         }
 
         function upperCaseFirst(string) {
