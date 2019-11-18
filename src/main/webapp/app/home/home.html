@@ -1,12 +1,12 @@
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-<center><h1>Welcome to Robot Turtles</h1></center>
 <div ng-cloak>
     <div class="row">
-
         <div class="col-md-6">
+            <center><h1>Welcome to Robot Turtles</h1></center>
             <md-button class="md-raised md-primary" ng-click="createGame()">
                 + Create New Game !
             </md-button>
+            <a href="RobotTurtles.pdf" target="_blank">Rules are Here</a>
             <md-input-container ng-hide="currentGame.started">
                 <label>Player Name</label>
                 <input ng-model="playerName" placehoder="Player name" id="playerName"
@@ -22,13 +22,11 @@
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Start Game
             </md-button>
 
-
-
             <div ng-repeat="player in currentGame.players track by $index" class="playerInfoWrapper">
                 <img ng-src="{{'content/images/turtle' + (player.playerNumber) + '.png'}}" width="40"/>
                 <b>{{player.playerName}} ({{player.direction}})</b>
                 <div ng-if="shouldSeeInfo(player) ">
-                    <br/>has cards in Hands :
+                    has cards in Hands :
                     <span ng-repeat="card in player.handCards track by $index" ng-click="clickOnCardInHand($index, $parent.$index)">
                         <img ng-src="{{'content/images/cards/' + (card.cardName) + '.png'}}" width="40"/>
                     </span>
@@ -212,6 +210,8 @@
     }
     td {
         height: 47px;
+        font-weight: bold
+        color: white;
     }
 
     .playerInfoWrapper {
@@ -241,10 +241,10 @@
     .background {
         min-height: 800px;
         min-width: 700px;
-        #background:url(content/images/background.jpeg) 0 0 no-repeat;
+        background:url(content/images/background.jpeg) 0 0 no-repeat;
         position: absolute;
         right: 0px;
-        opacity: 0.9;
+        opacity: 1;
     }
     .indexCell {
         text-align: center;
