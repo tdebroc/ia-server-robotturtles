@@ -40,9 +40,11 @@
         IAConnectorSocketService.connect();
         IAConnectorSocketService.receive().then(null, null, function(game) {
             console.log("from socket", game);
+            if ($scope.currentIdGame != game.idGame) {
+                return;
+            }
             $scope.currentGame = game;
             $scope.currentIdGame = game.idGame;
-            console.log()
         });
         IAConnectorSocketService.subscribe();
         IAConnectorSocketService.subscribeRefreshAllGames();
