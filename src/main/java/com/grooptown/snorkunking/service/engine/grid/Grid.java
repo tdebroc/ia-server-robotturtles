@@ -7,7 +7,10 @@ import com.grooptown.snorkunking.service.engine.player.Position;
  * Created by thibautdebroca on 02/11/2019.
  */
 public class Grid {
-    private final Panel[][] grid;
+    private Panel[][] grid;
+    public Grid() {
+        // JAckson Serialization.
+    }
     public Grid(int size) {
         grid = new Panel[size][size];
         for (int i = 0; i < size; i++) {
@@ -15,6 +18,10 @@ public class Grid {
                 grid[i][j] = new EmptyPanel();
             }
         }
+    }
+
+    public void setGrid(Panel[][] grid) {
+        this.grid = grid;
     }
 
     public Panel[][] getGrid() {

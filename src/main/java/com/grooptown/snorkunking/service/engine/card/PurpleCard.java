@@ -11,8 +11,8 @@ public class PurpleCard extends Card {
 
     @Override
     public void play(Game game) {
-        DirectionEnum nextDirection = MovementService.getNextPosition(game.getCurrentPlayer().getDirection(), true);
-        game.getCurrentPlayer().setDirection(nextDirection);
+        DirectionEnum nextDirection = MovementService.getNextPosition(game.findCurrentPlayer().getDirection(), true);
+        game.findCurrentPlayer().setDirection(nextDirection);
         game.addMoveDescription("New Direction of the turtle is " + nextDirection + " \n");
     }
 }

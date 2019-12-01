@@ -23,9 +23,9 @@
             </md-button>
 
             <div ng-repeat="player in currentGame.players track by $index" class="playerInfoWrapper">
-                <img ng-src="{{'content/images/turtle' + (player.playerNumber) + '.png'}}" width="40"/>
+                <img ng-src="{{'content/images/turtle' + getPlayerNumber(player) + '.png'}}" width="40"/>
                 <b>{{player.playerName}} ({{player.direction}})</b>
-                <div ng-if="shouldSeeInfo(player) ">
+                <div ng-if="shouldSeeInfo(player, $index) ">
                     has cards in Hands :
                     <span ng-repeat="card in player.handCards track by $index" ng-click="clickOnCardInHand($index, $parent.$index)">
                         <img ng-src="{{'content/images/cards/' + (card.cardName) + '.png'}}" width="40"/>
@@ -142,7 +142,7 @@
                                 ng-class="{'emptyCell': cell.panelName == 'EMPTY'}"
                             >
                                 <div ng-if="cell.panelName == 'PLAYER'" class="playerContainer">
-                                    <img ng-src="{{'content/images/turtle' + (cell.playerNumber) + '.png'}}" width="40"/>
+                                    <img ng-src="{{'content/images/turtle' + getPlayerNumber(cell) + '.png'}}" width="40"/>
                                     <br/>
                                     <i ng-if="cell.direction == 'NORTH'" class="material-icons">arrow_upward</i>
                                     <i ng-if="cell.direction == 'SOUTH'" class="material-icons">arrow_downward</i>

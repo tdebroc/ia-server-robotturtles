@@ -1,11 +1,13 @@
 package com.grooptown.snorkunking.web.rest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.grooptown.snorkunking.service.engine.game.Game;
 import com.grooptown.snorkunking.service.engine.move.AllMove;
 import com.grooptown.snorkunking.service.engine.player.Player;
 import com.grooptown.snorkunking.service.engine.connector.PlayerInstance;
 import com.grooptown.snorkunking.service.engine.connector.MessageResponse;
+import com.grooptown.snorkunking.service.engine.player.PlayerSecret;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +31,7 @@ import java.util.stream.Collectors;
 public class IAConnectorResource {
 
     @Autowired
+    private
     SimpMessageSendingOperations messagingTemplate;
 
     private static Map<Integer, Game> gamesMap = new HashMap<>();
@@ -56,9 +59,20 @@ public class IAConnectorResource {
     }
 
     @GetMapping("/game/{idGame}")
-    public Game getGame(@PathVariable Integer idGame) {
+    public Game getGame(@PathVariable Integer idGame) throws IOException {
         System.out.println("Get Game: " + idGame);
-        return gamesMap.get(idGame);
+        return filterGame(gamesMap.get(idGame));
+    }
+
+    @GetMapping("/player/secrets/{uuid}")
+    public PlayerSecret getPlayerSecrets(@PathVariable String uuid) throws Exception {
+        PlayerInstance playerInstance = playersInstances.get(uuid);
+        if (playerInstance == null) {
+            throw new Exception("UUID: " + uuid + " not known.");
+        }
+        Game game = gamesMap.get(playerInstance.getIdGame());
+        Player playerFromInstance = playerInstance.getPlayerFromInstance(game);
+        return playerFromInstance.getSecrets();
     }
 
 
@@ -69,7 +83,7 @@ public class IAConnectorResource {
 
     @GetMapping(value = "/addPlayer")
     public PlayerInstance addPlayer(@RequestParam(value = "idGame") int idGame,
-                                    @RequestParam(value = "playerName", required = false) String playerName) {
+                                    @RequestParam(value = "playerName", required = false) String playerName) throws IOException {
         Game game = gamesMap.get(idGame);
         if (game.isStarted() ||
             game.getPlayers().size() >= Game.MAX_NUM_PLAYER) {
@@ -88,7 +102,7 @@ public class IAConnectorResource {
     }
 
     @GetMapping(value = "/startGame")
-    public boolean startGame(@RequestParam(value = "idGame") int idGame) {
+    public boolean startGame(@RequestParam(value = "idGame") int idGame) throws IOException {
         Game game = gamesMap.get(idGame);
         game.startGame();
         refreshGame(game);
@@ -98,7 +112,7 @@ public class IAConnectorResource {
 
     @RequestMapping(method = RequestMethod.GET, value = "/sendMove")
     public ResponseEntity<MessageResponse> sendMove(@RequestParam(value = "playerUUID") String playerUUID,
-                                                    @RequestParam(value = "move") String moveString) throws JsonProcessingException {
+                                                    @RequestParam(value = "move") String moveString) throws IOException {
         System.out.println(playerUUID);
         PlayerInstance playerInstance = playersInstances.get(playerUUID);
         System.out.println(playerInstance);
@@ -180,9 +194,25 @@ public class IAConnectorResource {
         return new ResponseEntity<>(new MessageResponse(message, null), HttpStatus.BAD_REQUEST);
     }
 
-    public ResponseEntity<MessageResponse> sendValidResponse(String message) {
+    private ResponseEntity<MessageResponse> sendValidResponse(String message) {
         return new ResponseEntity<>(new MessageResponse(null, message), HttpStatus.OK);
     }
+
+    //==========================================================================================
+    //= Filter Information for front
+    //==========================================================================================
+
+    private Game filterGame(Game game) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        // objectMapper.enableDefaultTyping();
+        Game gameDeepCopy = objectMapper
+            .readValue(objectMapper.writeValueAsString(game), Game.class);
+        for (Player player : gameDeepCopy.getPlayers()) {
+            player.clearSecrets();
+        }
+        return game;
+    }
+
 
     //==========================================================================================
     //= Persit
@@ -204,7 +234,7 @@ public class IAConnectorResource {
         writeToFile(lastGameIdFile, "" + nextGameId);
     }
 
-    public void writeToFile(String fileName, String content) {
+    private void writeToFile(String fileName, String content) {
         try {
             File file = new File(fileName);
             FileWriter fileWriter = new FileWriter(file);
@@ -225,8 +255,8 @@ public class IAConnectorResource {
         }
     }
 
-    private void refreshGame(Game game) {
-        messagingTemplate.convertAndSend("/topic/refreshGame", game);
+    private void refreshGame(Game game) throws IOException {
+        messagingTemplate.convertAndSend("/topic/refreshGame", filterGame(game));
     }
 
 

@@ -16,7 +16,7 @@ import static com.grooptown.snorkunking.service.engine.player.MovementService.ge
 public class LaserCard extends Card {
     @Override
     public void play(Game game) {
-        Player currentPlayer = game.getCurrentPlayer();
+        Player currentPlayer = game.findCurrentPlayer();
         Position position = game.getGrid().getPosition(currentPlayer);
         DirectionEnum laserDirection = currentPlayer.getDirection();
         Position nextLaserPosition = getNextPosition(position, laserDirection);
@@ -38,7 +38,7 @@ public class LaserCard extends Card {
             }
             if (game.getGrid().getPanel(nextLaserPosition).getClass().equals(RubyPanel.class)) {
                 game.addMoveDescription("Laser has hit a ruby. Laser is reflected and go back to current player. \n");
-                game.getCurrentPlayer().touchLaser(game);
+                game.findCurrentPlayer().touchLaser(game);
                 return;
             }
             nextLaserPosition = getNextPosition(nextLaserPosition, laserDirection);

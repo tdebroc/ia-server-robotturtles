@@ -36,7 +36,7 @@ public class AllMove {
     }
 
     public boolean areCardToFoldValid(String cardToFoldParam, Game game) {
-        List<Card> playerHands = new LinkedList<>(game.getCurrentPlayer().getHandCards());
+        List<Card> playerHands = new LinkedList<>(game.findCurrentPlayer().handCards());
         if (this.getMove().getClass().equals(CompleteMove.class)) {
             CardService.removeCardsFromHand(playerHands, ((CompleteMove) (this.getMove())).getCardsToAdd());
         }

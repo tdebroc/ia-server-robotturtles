@@ -2,8 +2,6 @@ package com.grooptown.snorkunking.service.engine.move;
 
 import com.grooptown.snorkunking.service.engine.card.Card;
 
-import java.util.LinkedList;
-
 /**
  * Created by thibautdebroca on 08/11/2019.
  */
@@ -19,14 +17,14 @@ public class ExecuteMove extends Move {
 
     @Override
     public void playMove() {
-        for (Card card : game.getCurrentPlayer().getProgram()) {
+        for (Card card : game.findCurrentPlayer().program()) {
             game.addMoveDescription(" - Playing " + card.getCardName() + "\n");
             card.play(game);
-            if (game.getCurrentPlayer().isRubyReached()) {
+            if (game.findCurrentPlayer().isRubyReached()) {
                 break;
             }
         }
-        game.getCurrentPlayer().foldProgramCards();
+        game.findCurrentPlayer().foldProgramCards();
 
     }
 

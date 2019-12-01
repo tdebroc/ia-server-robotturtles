@@ -6,7 +6,6 @@ import com.grooptown.snorkunking.service.engine.grid.RubyPanel;
 import com.grooptown.snorkunking.service.engine.player.DirectionEnum;
 import com.grooptown.snorkunking.service.engine.player.Player;
 import com.grooptown.snorkunking.service.engine.player.Position;
-import com.grooptown.snorkunking.service.engine.tile.IceTile;
 import com.grooptown.snorkunking.service.engine.tile.Tile;
 import com.grooptown.snorkunking.service.engine.tile.TileService;
 import com.grooptown.snorkunking.service.engine.tile.WallTile;
@@ -36,7 +35,7 @@ public class BuildWallMove extends Move {
         }
         String[] entrySplit = entry.split(" ");
         tileToBuild = TileService.getTile(entrySplit[0]);
-        if (!game.getCurrentPlayer().hasTile(tileToBuild)) {
+        if (!game.findCurrentPlayer().hasTile(tileToBuild)) {
             System.out.println("Vous n'avez pas de " + entrySplit[0]);
             return false;
         }
@@ -104,7 +103,7 @@ public class BuildWallMove extends Move {
         game.addMoveDescription(" - Player added a Wall of type " + tileToBuild.toAscii()
             + " in cell [" + line + "," + column + "] \n");
         game.getGrid().getGrid()[line][column] = tileToBuild;
-        game.getCurrentPlayer().removeTile(tileToBuild);
+        game.findCurrentPlayer().removeTile(tileToBuild);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.grooptown.snorkunking.service.engine.tile;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.grooptown.snorkunking.service.engine.grid.Panel;
 import com.grooptown.snorkunking.service.engine.grid.PanelEnum;
 

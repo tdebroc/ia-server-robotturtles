@@ -1,5 +1,6 @@
 package com.grooptown.snorkunking.service.engine.player;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.grooptown.snorkunking.service.engine.card.Card;
 import com.grooptown.snorkunking.service.engine.card.CardDeck;
 import com.grooptown.snorkunking.service.engine.card.CardService;
@@ -23,28 +24,24 @@ import static com.grooptown.snorkunking.service.engine.player.MovementService.ge
  */
 public class Player implements Panel {
     public static final int MAX_CARD_ALLOWED_IN_HAND = 5;
-    private final int playerNumber;
     private String playerName;
-    private final List<Tile> tiles = new ArrayList<>();
+    private List<Tile> tiles = new ArrayList<>();
     private final List<Card> handCards = new ArrayList<>();
     private final List<Card> program = new ArrayList<>();
     private CardDeck cardDeck;
     private DirectionEnum direction = DirectionEnum.SOUTH;
     private Position initialPosition;
     private boolean rubyReached;
+    public Player() {
+        // For Jackson
+    }
 
-    public Player(int playerNumber, String playerName) {
-        this.playerNumber = playerNumber;
+    public Player(String playerName) {
         this.playerName = playerName;
-        initPlayer();
     }
 
-    public Player( int playerNumber) {
-        this.playerNumber = playerNumber;
-        initPlayer();
-    }
 
-    private void initPlayer() {
+    public void initPlayerTiles() {
         for (int j = 0; j < 3; j++) {
             tiles.add(new WallTile());
         }
@@ -53,19 +50,23 @@ public class Player implements Panel {
         }
     }
 
+    // For Jackson serialization
+    public void setTiles(List<Tile> tiles) {
+        this.tiles = tiles;
+    }
 
     public List<Tile> getTiles() {
         return tiles;
     }
 
-    public List<Card> getHandCards() {
+    public List<Card> handCards() {
         return handCards;
     }
 
 
     @Override
     public String toAscii() {
-        return " T" + playerNumber + " ";
+        return " T" + playerName.substring(0, 2) + " ";
     }
 
     public void setCardDeck(CardDeck cardDeck) {
@@ -73,7 +74,6 @@ public class Player implements Panel {
     }
 
     public void pickCardInDeck() {
-        System.out.println("Deck size is " + cardDeck.getCards().size());
         if (cardDeck.getCards().size() == 0) {
             cardDeck.buildDefaultDeck();
         }
@@ -84,7 +84,7 @@ public class Player implements Panel {
     }
 
     public void displayPlayer() {
-        System.out.println("###### Player " + (playerNumber + 1) + " id in Direction " + direction + " and has : ######");
+        System.out.println("###### Player " + (playerName) + " id in Direction " + direction + " and has : ######");
         System.out.println("  - " + tiles.size() + " Tiles : " + tiles);
         System.out.println("  - " + handCards.size() + " Cards : " + cardsToString(handCards));
         System.out.println("  - Program is composed of " + program.size() + " Cards : " + cardsToString(program));
@@ -92,8 +92,8 @@ public class Player implements Panel {
 
     public void foldProgramCards() {
         Iterator<Card> iterator = program.iterator();
-        for (Iterator<Card> it = iterator; it.hasNext(); ) {
-            Card card = it.next();
+        for (; iterator.hasNext(); ) {
+            iterator.next();
             iterator.remove();
         }
     }
@@ -118,7 +118,7 @@ public class Player implements Panel {
         program.addAll(newCards);
     }
 
-    public List<Card> getProgram() {
+    public List<Card> program() {
         return program;
     }
 
@@ -171,9 +171,6 @@ public class Player implements Panel {
         this.rubyReached = rubyReached;
     }
 
-    public int getPlayerNumber() {
-        return playerNumber;
-    }
     @Override
     public PanelEnum getPanelName() {
         return PanelEnum.PLAYER;
@@ -185,10 +182,20 @@ public class Player implements Panel {
     }
 
     public void removeCardsFromHand(List<Card> cardsToAdd) {
-        CardService.removeCardsFromHand(this.getHandCards(), cardsToAdd);
+        CardService.removeCardsFromHand(this.handCards(), cardsToAdd);
     }
 
     public Position getInitialPosition() {
         return initialPosition;
+    }
+
+    @JsonIgnore
+    public PlayerSecret getSecrets() {
+        return new PlayerSecret(handCards, program);
+    }
+
+    public void clearSecrets() {
+        this.handCards.clear();
+        this.program.clear();
     }
 }

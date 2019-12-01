@@ -29,9 +29,9 @@ public class Game {
 
     private int turnCount = 0;
 
-    private final List<Player> players = new ArrayList<>();
+    private List<Player> players = new ArrayList<>();
 
-    private final List<Player> leaderBoard = new ArrayList<>();
+    private List<Player> leaderBoard = new ArrayList<>();
 
     private boolean finished = false;
 
@@ -43,6 +43,9 @@ public class Game {
 
     private Grid grid;
 
+    public Game() {
+        // Needed For Jackson Deserialization.
+    }
     public Game(int idGame) {
         this.idGame = idGame;
     }
@@ -117,7 +120,7 @@ public class Game {
 
         String cardToFold;
 
-        List<Card> playerHands = new LinkedList<>(this.getCurrentPlayer().getHandCards());
+        List<Card> playerHands = new LinkedList<>(this.findCurrentPlayer().handCards());
         if (allMove.getMove().getClass().equals(CompleteMove.class)) {
             CardService.removeCardsFromHand(playerHands, ((CompleteMove) (allMove.getMove())).getCardsToAdd());
         }
@@ -148,7 +151,7 @@ public class Game {
     private void addToMoveRecord(AllMove allMove) {
         MoveRecord moveRecord = new MoveRecord();
         moveRecords.add(moveRecord);
-        moveRecord.setPlayerName(getCurrentPlayer().getPlayerName());
+        moveRecord.setPlayerName(findCurrentPlayer().getPlayerName());
         moveRecord.setTitle(allMove.getMove().getClass().getSimpleName());
         moveRecord.setTurnNumber(turnCount);
     }
@@ -160,13 +163,13 @@ public class Game {
     private void selectNextPlayer() {
         do {
             currentPlayerIndex = (currentPlayerIndex + 1) % 2;
-        } while (getCurrentPlayer().isRubyReached());
+        } while (findCurrentPlayer().isRubyReached());
     }
 
     private void foldAndPickNewCards(AllMove allMove) {
-        CardService.removeCardsFromHand(getCurrentPlayer().getHandCards(), allMove.getCardToFold());
-        while (getCurrentPlayer().getHandCards().size() < MAX_CARD_ALLOWED_IN_HAND) {
-            getCurrentPlayer().pickCardInDeck();
+        CardService.removeCardsFromHand(findCurrentPlayer().handCards(), allMove.getCardToFold());
+        while (findCurrentPlayer().handCards().size() < MAX_CARD_ALLOWED_IN_HAND) {
+            findCurrentPlayer().pickCardInDeck();
         }
         moveRecords.getLast().setNumberOfCardFold(allMove.getCardToFold().size());
     }
@@ -220,7 +223,7 @@ public class Game {
 
     private void addPlayers(int playerCount) {
         for (int i = 0; i < playerCount; i++) {
-            players.add(new Player(i));
+            players.add(new Player("t" + i));
         }
     }
 
@@ -264,12 +267,16 @@ public class Game {
         }
     }
 
-    public Player getCurrentPlayer() {
+    public Player findCurrentPlayer() {
         return players.size() > 0 ? players.get(currentPlayerIndex) : null;
     }
 
         public Grid getGrid() {
         return grid;
+    }
+
+    public void setPlayers(List<Player> players) {
+        this.players = players;
     }
 
     public List<Player> getPlayers() {
@@ -285,7 +292,9 @@ public class Game {
     }
 
     public void addPlayer(String playerName) {
-        players.add(new Player(players.size() + 1, playerName));
+        Player player = new Player(playerName);
+        player.initPlayerTiles();
+        players.add(player);
     }
 
     public boolean isFinished() {
@@ -301,6 +310,11 @@ public class Game {
         setStarted(true);
     }
 
+    // Here for Jackson Deserialization
+    public void setCurrentIdPlayerTurn(int currentPlayerIndex) {
+        this.currentPlayerIndex = currentPlayerIndex;
+    }
+
     public int getCurrentIdPlayerTurn() {
         return currentPlayerIndex;
     }
@@ -309,12 +323,17 @@ public class Game {
         return idGame;
     }
 
+    // Here for Jackson Deserialization
     public void setIdGame(int idGame) {
         this.idGame = idGame;
     }
 
     public String asJson() throws JsonProcessingException {
         return new ObjectMapper().writeValueAsString(this);
+    }
+
+    public void setLeaderBoard(List<Player> leaderBoard) {
+        this.leaderBoard = leaderBoard;
     }
 
     public List<Player> getLeaderBoard() {
@@ -333,8 +352,22 @@ public class Game {
         return gridHistory;
     }
 
+    // Here for Jackson Deserialization
+    public void setGridHistory(LinkedList<Grid> gridHistory) {
+        this.gridHistory = gridHistory;
+    }
+
+    // Here for Jackson Deserialization
+    public void setMoveRecords(LinkedList<MoveRecord> moveRecords) {
+        this.moveRecords = moveRecords;
+    }
+
     public LinkedList<MoveRecord> getMoveRecords() {
         return moveRecords;
+    }
+
+    public void setTurnCount(int turnCount) {
+        this.turnCount = turnCount;
     }
 
     public int getTurnCount() {

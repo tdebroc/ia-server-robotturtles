@@ -16,17 +16,17 @@ import static com.grooptown.snorkunking.service.engine.player.MovementService.ge
 public class BlueCard extends Card {
     @Override
     public void play(Game game) {
-        Player currentPlayer = game.getCurrentPlayer();
+        Player currentPlayer = game.findCurrentPlayer();
         Position currentPosition = game.getGrid().getPosition(currentPlayer);
         Position nextPosition = getNextPosition(currentPosition, currentPlayer.getDirection());
         game.addMoveDescription("Next Position of turtle should be " + nextPosition +"\n");
         if (game.getGrid().isOutOfBound(nextPosition)) {
-            game.addMoveDescription("Turtle is going out of board. It goes back to it's initial Position " + game.getCurrentPlayer().getInitialPosition() +"\n");
+            game.addMoveDescription("Turtle is going out of board. It goes back to it's initial Position " + game.findCurrentPlayer().getInitialPosition() +"\n");
             currentPlayer.backToInitialPosition(game.getGrid());
         } else if (game.getGrid().getPanel(nextPosition).getClass().equals(IceTile.class)
                 || game.getGrid().getPanel(nextPosition).getClass().equals(WallTile.class)
                 || game.getGrid().getPanel(nextPosition).getClass().equals(WoodBoxTile.class)) {
-            game.addMoveDescription("Turtle has hit a Wall. It's reversing it's direction to : " + game.getCurrentPlayer().getDirection() +"\n");
+            game.addMoveDescription("Turtle has hit a Wall. It's reversing it's direction to : " + game.findCurrentPlayer().getDirection() +"\n");
             currentPlayer.reverseDirection();
         } else if (game.getGrid().getPanel(nextPosition).getClass().equals(Player.class)) {
             Player touchedPlayer = (Player) game.getGrid().getPanel(nextPosition);
@@ -36,9 +36,9 @@ public class BlueCard extends Card {
         } else if (game.getGrid().getPanel(nextPosition).getClass().equals(RubyPanel.class)) {
             currentPlayer.setRubyReached(true);
             game.addMoveDescription("Turtle has reached a Ruby ! \n");
-            System.out.println("Player " + currentPlayer.getPlayerNumber() + " has reached a Ruby !");
+            System.out.println("Player " + currentPlayer.getPlayerName() + " has reached a Ruby !");
             game.getGrid().makeCellEmpty(currentPosition);
-            game.getLeaderBoard().add(game.getCurrentPlayer());
+            game.getLeaderBoard().add(game.findCurrentPlayer());
         } else {
             currentPlayer.moveTo(nextPosition, game.getGrid());
         }

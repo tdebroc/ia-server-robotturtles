@@ -4,12 +4,23 @@ package com.grooptown.snorkunking.service.engine.player;
 import java.util.Objects;
 
 public class Position {
-    private final int line;
-    private final int column;
+    private int line;
+    private int column;
+
+    public Position() {
+    }
 
     public Position(int line, int column) {
         this.column = column;
         this.line = line;
+    }
+
+    public void setLine(int line) {
+        this.line = line;
+    }
+
+    public void setColumn(int column) {
+        this.column = column;
     }
 
     public int getColumn() {

@@ -8,7 +8,6 @@ import com.grooptown.snorkunking.security.SecurityUtils;
 import com.grooptown.snorkunking.service.MailService;
 import com.grooptown.snorkunking.service.UserService;
 import com.grooptown.snorkunking.service.dto.UserDTO;
-import com.grooptown.snorkunking.service.game.Game;
 import com.grooptown.snorkunking.web.rest.errors.*;
 import com.grooptown.snorkunking.web.rest.vm.KeyAndPasswordVM;
 import com.grooptown.snorkunking.web.rest.vm.ManagedUserVM;

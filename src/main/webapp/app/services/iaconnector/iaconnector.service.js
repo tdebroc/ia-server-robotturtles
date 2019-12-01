@@ -18,13 +18,14 @@
                 return $http.get('/api/iaconnector/game');
             },
             getGames : function (callback) {
-                        $http.get('/api/iaconnector/games').then(callback);
-            },
-            getGames : function (callback) {
                 $http.get('/api/iaconnector/games').then(callback);
             },
             addPlayer : function(idGame, playerName, callback) {
                 $http.get('/api/iaconnector/addPlayer?idGame=' + idGame + '&playerName=' + playerName)
+                     .then(callback);
+            },
+            getSecrets : function(playerUUID, callback) {
+                $http.get('/api/iaconnector/player/secrets/' + playerUUID)
                      .then(callback);
             },
             startGame : function (idGame) {

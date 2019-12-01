@@ -24,6 +24,24 @@
 
         console.log("$scope.currentPlayers", $scope.currentPlayers);
 
+        function getCurrentKeyFromGame(idGame) {
+            var currentPlayersKey = [];
+            for (var key in $scope.currentPlayers) {
+                if (getIdGameFromKey(key) == idGame) {
+                    currentPlayersKey.push(key);
+                }
+            }
+            return currentPlayersKey;
+        }
+
+        function getPlayerTurnIdFromKey(key) {
+            return key.split("#")[1];
+        }
+
+        function getIdGameFromKey(key) {
+            return key.split("#")[0];
+        }
+
         //=====================================================================
         //= Reboot
         //=====================================================================
@@ -43,8 +61,7 @@
             if ($scope.currentIdGame != game.idGame) {
                 return;
             }
-            $scope.currentGame = game;
-            $scope.currentIdGame = game.idGame;
+            refreshGame(game);
         });
         IAConnectorSocketService.subscribe();
         IAConnectorSocketService.subscribeRefreshAllGames();
@@ -58,7 +75,6 @@
         var vm = this;
         $scope.currentGame;
         $scope.currentIdGame;
-
 
         $scope.createGame = function() {
 
@@ -77,14 +93,44 @@
             console.log(idGame);
             IAConnectorGame
                 .get({idGame : idGame})
-                .$promise.then(function(currentGame) {
-                    console.log(currentGame);
-                    $scope.currentIdGame = idGame;
-                    $scope.currentGame = currentGame;
-                    initMove();
-                 });;
+                .$promise.then(refreshGame);;
         }
 
+        function refreshGame(currentGame) {
+            console.log(currentGame);
+            $scope.currentIdGame = currentGame.idGame;
+            $scope.currentGame = currentGame;
+            initMove();
+            getSecrets();
+        }
+
+        /**
+         * Gets Secrets
+         */
+         function getSecrets() {
+            var currentPlayersKey = getCurrentKeyFromGame($scope.currentIdGame);
+            console.log(currentPlayersKey);
+            for (var index in currentPlayersKey) {
+                getSecret(currentPlayersKey[index])
+            }
+         }
+
+         function getSecret(key) {
+            IAConnectorService
+                .getSecrets($scope.currentPlayers[key], addSecretToCurrentGame.bind(this, key))
+         }
+
+        function addSecretToCurrentGame(key, res) {
+            var secret = res.data;
+            var playerIndex = getPlayerTurnIdFromKey(key);
+            for (var index in $scope.currentGame.players) {
+                if (playerIndex == index) {
+                    var player = $scope.currentGame.players[index];
+                    player.program = secret.program;
+                    player.handCards = secret.handCards;
+                }
+            }
+        }
 
         /**
          * Refresh List of Games.
@@ -115,25 +161,18 @@
 
         $scope.playerName =  chance.name({ nationality: "it" })
 
-        $scope.shouldSeeInfo = function(player) {
+        $scope.shouldSeeInfo = function(player, playerIndex) {
             for (var key in $scope.currentPlayers) {
                 var idPlayerTurn = getPlayerTurnIdFromKey(key);
                 var idGame = getIdGameFromKey(key);
                 if ($scope.currentIdGame == idGame
-                    && idPlayerTurn == player.playerNumber - 1) {
+                    && idPlayerTurn == playerIndex) {
                     return true;
                 }
             }
             return false;
         }
 
-        function getPlayerTurnIdFromKey(key) {
-            return key.split("#")[1];
-        }
-
-        function getIdGameFromKey(key) {
-            return key.split("#")[0];
-        }
 
         $scope.addPlayer= function() {
             var idGame = $scope.currentIdGame;
@@ -204,6 +243,16 @@
                 }
             }
             return playersAtSurface;
+        }
+
+        $scope.getPlayerNumber = function(player) {
+            for (var i = 0; i < $scope.currentGame.players.length; i++) {
+                var currentPlayer = $scope.currentGame.players[i];
+                if (player.playerName == currentPlayer.playerName) {
+                    return (i + 1);
+                }
+            }
+            return -1;
         }
 
         // ============================================================================================================

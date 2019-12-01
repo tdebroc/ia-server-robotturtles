@@ -10,8 +10,8 @@ import com.grooptown.snorkunking.service.engine.player.MovementService;
 public class YellowCard extends Card {
     @Override
     public void play(Game game) {
-        DirectionEnum nextDirection = MovementService.getNextPosition(game.getCurrentPlayer().getDirection(), false);
-        game.getCurrentPlayer().setDirection(nextDirection);
+        DirectionEnum nextDirection = MovementService.getNextPosition(game.findCurrentPlayer().getDirection(), false);
+        game.findCurrentPlayer().setDirection(nextDirection);
         game.addMoveDescription("New Direction of the turtle is " + nextDirection + " \n");
     }
 }

@@ -19,11 +19,11 @@ public class CompleteMove extends Move {
             System.out.println("Entry is not Valid");
             return false;
         }
-        if (game.getCurrentPlayer().getProgram().size() + entry.length() > MAX_CARD_ALLOWED_IN_HAND) {
+        if (game.findCurrentPlayer().program().size() + entry.length() > MAX_CARD_ALLOWED_IN_HAND) {
             System.out.println("You'll have too many Card in your Program !");
             return false;
         }
-        return CardService.hasEnoughCards(entry, game.getCurrentPlayer().getHandCards());
+        return CardService.hasEnoughCards(entry, game.findCurrentPlayer().handCards());
     }
 
     @Override
@@ -34,8 +34,8 @@ public class CompleteMove extends Move {
     @Override
     public void playMove() {
         game.addMoveDescription(" - Player added " + cardsToAdd.size() + " cards to it's program \n");
-        game.getCurrentPlayer().removeCardsFromHand(cardsToAdd);
-        game.getCurrentPlayer().addCardsToProgram(cardsToAdd);
+        game.findCurrentPlayer().removeCardsFromHand(cardsToAdd);
+        game.findCurrentPlayer().addCardsToProgram(cardsToAdd);
     }
 
     @Override
