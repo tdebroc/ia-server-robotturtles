@@ -13,6 +13,7 @@ import com.grooptown.snorkunking.service.engine.tile.Tile;
 import com.grooptown.snorkunking.service.engine.tile.WallTile;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -28,6 +29,7 @@ public class Player implements Panel {
     private List<Tile> tiles = new ArrayList<>();
     private final List<Card> handCards = new ArrayList<>();
     private final List<Card> program = new ArrayList<>();
+    private final List<Card> discarded = new ArrayList<>();
     private CardDeck cardDeck;
     private DirectionEnum direction = DirectionEnum.SOUTH;
     private Position initialPosition;
@@ -64,6 +66,7 @@ public class Player implements Panel {
     }
 
 
+
     @Override
     public String toAscii() {
         return " T" + playerName.substring(0, 2) + " ";
@@ -75,7 +78,9 @@ public class Player implements Panel {
 
     public void pickCardInDeck() {
         if (cardDeck.getCards().size() == 0) {
-            cardDeck.buildDefaultDeck();
+            Collections.shuffle(discarded);
+            cardDeck.getCards().addAll(discarded);
+            discarded.clear();
         }
         if (handCards.size() >= MAX_CARD_ALLOWED_IN_HAND) {
             throw new RuntimeException("Already " + MAX_CARD_ALLOWED_IN_HAND + " handCards ...");
@@ -93,7 +98,8 @@ public class Player implements Panel {
     public void foldProgramCards() {
         Iterator<Card> iterator = program.iterator();
         for (; iterator.hasNext(); ) {
-            iterator.next();
+            Card card = iterator.next();
+            addToDiscarded(card);
             iterator.remove();
         }
     }
@@ -197,5 +203,9 @@ public class Player implements Panel {
     public void clearSecrets() {
         this.handCards.clear();
         this.program.clear();
+    }
+
+    public void addToDiscarded(Card card) {
+        discarded.add(card);
     }
 }

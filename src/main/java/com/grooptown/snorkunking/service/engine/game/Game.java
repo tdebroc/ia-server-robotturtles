@@ -167,6 +167,9 @@ public class Game {
     }
 
     private void foldAndPickNewCards(AllMove allMove) {
+        for (Card card : findCurrentPlayer().handCards()) {
+            findCurrentPlayer().addToDiscarded(card);
+        }
         CardService.removeCardsFromHand(findCurrentPlayer().handCards(), allMove.getCardToFold());
         while (findCurrentPlayer().handCards().size() < MAX_CARD_ALLOWED_IN_HAND) {
             findCurrentPlayer().pickCardInDeck();
