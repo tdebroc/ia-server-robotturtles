@@ -162,7 +162,7 @@ public class Game {
 
     private void selectNextPlayer() {
         do {
-            currentPlayerIndex = (currentPlayerIndex + 1) % 2;
+            currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
         } while (findCurrentPlayer().isRubyReached());
     }
 

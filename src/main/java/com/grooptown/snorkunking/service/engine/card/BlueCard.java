@@ -26,8 +26,8 @@ public class BlueCard extends Card {
         } else if (game.getGrid().getPanel(nextPosition).getClass().equals(IceTile.class)
                 || game.getGrid().getPanel(nextPosition).getClass().equals(WallTile.class)
                 || game.getGrid().getPanel(nextPosition).getClass().equals(WoodBoxTile.class)) {
-            game.addMoveDescription("Turtle has hit a Wall. It's reversing it's direction to : " + game.findCurrentPlayer().getDirection() +"\n");
             currentPlayer.reverseDirection();
+            game.addMoveDescription("Turtle has hit a Wall. It's reversing it's direction to : " + game.findCurrentPlayer().getDirection() +"\n");
         } else if (game.getGrid().getPanel(nextPosition).getClass().equals(Player.class)) {
             Player touchedPlayer = (Player) game.getGrid().getPanel(nextPosition);
             touchedPlayer.touchTurtle(game);
