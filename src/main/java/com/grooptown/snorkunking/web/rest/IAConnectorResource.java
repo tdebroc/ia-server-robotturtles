@@ -65,14 +65,15 @@ public class IAConnectorResource {
     }
 
     @GetMapping("/player/secrets/{uuid}")
-    public PlayerSecret getPlayerSecrets(@PathVariable String uuid) throws Exception {
+    public ResponseEntity<PlayerSecret> getPlayerSecrets(@PathVariable String uuid) throws Exception {
         PlayerInstance playerInstance = playersInstances.get(uuid);
         if (playerInstance == null) {
             throw new Exception("UUID: " + uuid + " not known.");
         }
         Game game = gamesMap.get(playerInstance.getIdGame());
         Player playerFromInstance = playerInstance.getPlayerFromInstance(game);
-        return playerFromInstance.getSecrets();
+        return new ResponseEntity<>(playerFromInstance.getSecrets(), HttpStatus.OK);
+
     }
 
 
