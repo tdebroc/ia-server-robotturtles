@@ -102,6 +102,7 @@
             $scope.currentGame = currentGame;
             initMove();
             getSecrets();
+            refreshUI();
         }
 
         /**
@@ -144,9 +145,22 @@
                 }
                 $scope.games = games;
                 console.log($scope.games);
+                refreshUI();
             })
         }
         $scope.refreshGameList();
+
+        function refreshUI() {
+            setTimeout(setGameListHeight, 200);
+            setTimeout(setGameListHeight, 1000);
+        }
+        function setGameListHeight() {
+            var newSize = $(window).height() - $("#game-container").position().top;
+            newSize = Math.max(newSize, 200)
+            $("#game-container").height(newSize);
+        }
+
+
 
         function refreshCurrentGame() {
             $scope.selectGame($scope.currentIdGame);

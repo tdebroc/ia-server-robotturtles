@@ -1,4 +1,6 @@
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<!-- <link href="content/myfont.woff2" rel="stylesheet">-->
+
 <div ng-cloak>
     <div class="row">
         <div class="col-md-6">
@@ -9,8 +11,7 @@
             Program your Robot to reach the Ruby ! (<a href="RobotTurtles.pdf" target="_blank">Rules are Here</a>)
             <md-input-container ng-hide="currentGame.started">
                 <label>Player Name</label>
-                <input ng-model="playerName" placehoder="Player name" id="playerName"
-                        />
+                <input ng-model="playerName" placehoder="Player name" id="playerName"/>
             </md-input-container>
             <md-button class="md-raised md-primary" ng-click="addPlayer()"
             ng-hide="currentGame.started">
@@ -103,18 +104,25 @@
                     </div>
                 </div>
             </div>
-            <br/>
-            <md-list-item class="md-3-line" ng-repeat="game in games" ng-click="selectGame(game)"
-                          ng-class='game == currentGame.idGame ? "selectedGame" : ""'>
+            <div id="game-container">
+                <md-input-container>
+                    <label>Filter Game</label>
+                    <input ng-model="filterGames" placehoder="Filter games" id="filterGames"/>
+                </md-input-container>
+                <md-list-item class="md-3-line"
+                              ng-repeat="game in games | filter : filterGames | orderBy:'idGame':true"
+                              ng-click="selectGame(game)"
+                              ng-class='game == currentGame.idGame ? "selectedGame" : ""'>
 
-                <div class="md-list-item-text" layout="column">
-                    <h3>Game {{ game }}</h3>
-                </div>
-            </md-list-item>
+                    <div class="md-list-item-text game-line" layout="column">
+                        <h3>Game {{ game }}</h3>
+                    </div>
+                </md-list-item>
+            </div>
         </div>
 
-        <div class="col-md-6 background">
-            <div style="margin: 10px; ">
+        <div class="col-md-6" ng-class='currentGame.started ? "" : "background background-home"'>
+            <div>
                 <h3>Game {{ currentIdGame }} - Turn {{ currentGame.turnCount }}
                     <md-button class="md-raised md-primary" ng-click="changeGrid(-1)"
                                ng-if="currentGame.turnCount != 0"> < </md-button>
@@ -128,22 +136,22 @@
                     </div>
                 </div>
 
-                <table ng-if="currentGame.started">
+                <table ng-if="currentGame.started" id="board-game"
+                       ng-class='currentGame.started ? "background-board" : ""'>
                     <tbody>
                         <tr>
                             <td></td>
-                            <td class="indexCell" ng-repeat="n in '01234567'">{{n}}</td>
+                            <td class="indexCell firstLine" ng-repeat="n in '01234567'">{{n}}</td>
                             <!--<td class="indexCell" ng-repeat="n in 'ABCDEFGH'">{{n}}</td>-->
                         </tr>
                         <tr ng-repeat="line in getGridToDisplay() track by $index">
-                            <td class="indexCell">{{$index}}</td>
+                            <td class="indexCell otherLines">{{$index}}</td>
                             <td ng-repeat="cell in line track by $index"
                                 ng-click="chooseWallPosition($parent.$index, $index)"
                                 ng-class="{'emptyCell': cell.panelName == 'EMPTY'}"
                             >
                                 <div ng-if="cell.panelName == 'PLAYER'" class="playerContainer">
                                     <img ng-src="{{'content/images/turtle' + getPlayerNumber(cell) + '.png'}}" width="40"/>
-                                    <br/>
                                     <i ng-if="cell.direction == 'NORTH'" class="material-icons">arrow_upward</i>
                                     <i ng-if="cell.direction == 'SOUTH'" class="material-icons">arrow_downward</i>
                                     <i ng-if="cell.direction == 'WEST'" class="material-icons">arrow_back</i>
@@ -209,7 +217,6 @@
         font-size: 21px;
     }
     td {
-        height: 47px;
         font-weight: bold
         color: white;
     }
@@ -238,16 +245,40 @@
     .selectedGame {
         background-color: rgb(220,220,220);
     }
-    .background {
-        min-height: 800px;
-        min-width: 700px;
+    .background-board {
+        background:url(content/images/background_board.jpg) 0 0 no-repeat;
+        background-position: top 34px left 44px;
+    }
+    .background-home {
         background:url(content/images/background.jpeg) 0 0 no-repeat;
+    }
+    .background {
+        min-height: 760px;
+        min-width: 700px;
         position: absolute;
         right: 0px;
         opacity: 1;
     }
+    #board-game td {
+        min-width: 58px;
+    }
     .indexCell {
         text-align: center;
+
+    }
+    .firstLine {
+        height: 46px !important;
+    }
+    .otherLines {
+        height: 58px;
+    }
+    .playerContainer {
+        position: relative;
+    }
+    .playerContainer i {
+        left: 6px;
+        position: absolute;
+        top: 23px;
     }
     .move-container {
         margin-right: 60px;
@@ -281,4 +312,36 @@
     .emptyCell {
         cursor: pointer;
     }
+
+    #game-container {
+        height: 300px;
+        overflow-y: scroll;
+    }
+
+    #game-container::-webkit-scrollbar-thumb {
+        border-radius: 8px;
+        border: 2px solid white;
+        background-color: rgba(0, 0, 0, .5);
+    }
+
+    #game-container::-webkit-scrollbar {
+        -webkit-appearance: none;
+    }
+
+    #game-container::-webkit-scrollbar:vertical {
+        width: 11px;
+    }
+
+    #game-container::-webkit-scrollbar:horizontal {
+        height: 11px;
+    }
+
+    #game-container md-input-container .md-errors-spacer {
+        min-height: 0px;
+    }
+    #game-container md-input-container {
+        margin-bottom: 0px;
+    }
+
+
 </style>
