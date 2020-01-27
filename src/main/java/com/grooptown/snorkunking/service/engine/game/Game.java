@@ -250,7 +250,7 @@ public class Game {
             buildRightWall();
         } else if (players.size() == 4) {
             initialPositions[0] = new Position(0, 0);
-            initialPositions[1] = new Position(0, 3);
+            initialPositions[1] = new Position(0, 2);
             initialPositions[2] = new Position(0, grid.getGrid()[0].length - 3);
             initialPositions[3] = new Position(0, grid.getGrid()[0].length - 1);
             grid.getGrid()[lastLineIndex][1] = new RubyPanel();
