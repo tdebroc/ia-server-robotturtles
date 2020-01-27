@@ -224,7 +224,6 @@
         }
 
         $scope.isCurrentPlayer = function(currentIdGame, idPlayerTurn) {
-            console.log(currentIdGame, idPlayerTurn, getKey(currentIdGame, idPlayerTurn));
             return $scope.currentPlayers[getKey(currentIdGame, idPlayerTurn)]
         }
 
@@ -380,6 +379,19 @@
         // Grid :
         // ============================================================================================================
 
+
+        $scope.displayRecordDate = function(record) {
+            var date = new Date(record.date);
+            var displayedDate = "";
+            displayedDate += date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
+            if (record.turnNumber == 0) {
+                displayedDate += " (the "
+                + (date.getUTCDate() < 10 ? "0" : "")+ date.getUTCDate() + "/"
+                + (date.getUTCMonth() + 1 < 10 ? "0" : "") + (date.getUTCMonth() + 1) + "/"
+                + date.getUTCFullYear() + ")";
+            }
+            return displayedDate;
+        }
 
         $scope.changeGrid = function(inc) {
             $scope.currentGame.turnCount = $scope.currentGame.turnCount + inc;

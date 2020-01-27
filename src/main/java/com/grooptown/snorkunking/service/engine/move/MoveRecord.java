@@ -1,5 +1,6 @@
 package com.grooptown.snorkunking.service.engine.move;
 
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -9,6 +10,11 @@ public class MoveRecord {
     private List<String> description = new LinkedList<>();
     private String playerName;
     private int numberOfCardFold;
+    private Date date;
+
+    public MoveRecord() {
+        this.date = new Date();
+    }
 
     public String getTitle() {
         return title;
@@ -48,5 +54,9 @@ public class MoveRecord {
 
     public void setNumberOfCardFold(int numberOfCardFold) {
         this.numberOfCardFold = numberOfCardFold;
+    }
+
+    public Date getDate() {
+        return date;
     }
 }

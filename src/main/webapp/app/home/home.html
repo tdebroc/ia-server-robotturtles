@@ -24,7 +24,7 @@
             </md-button>
 
             <div ng-repeat="player in currentGame.players track by $index" class="playerInfoWrapper">
-                <img ng-src="{{'content/images/turtle' + getPlayerNumber(player) + '.png'}}" width="40"/>
+                <img ng-src="{{'content/images/turtles/turtle' + getPlayerNumber(player) + 'transparent.png'}}" width="40"/>
                 <b>{{player.playerName}} ({{player.direction}})</b>
                 <div ng-if="shouldSeeInfo(player, $index) ">
                     has cards in Hands :
@@ -140,16 +140,13 @@
                                 ng-class="{'emptyCell': cell.panelName == 'EMPTY'}"
                             >
                                 <div ng-if="cell.panelName == 'PLAYER'" class="playerContainer">
-                                    <img ng-src="{{'content/images/turtle' + getPlayerNumber(cell) + '.png'}}" width="40"/>
-                                    <i ng-if="cell.direction == 'NORTH'" class="material-icons">arrow_upward</i>
-                                    <i ng-if="cell.direction == 'SOUTH'" class="material-icons">arrow_downward</i>
-                                    <i ng-if="cell.direction == 'WEST'" class="material-icons">arrow_back</i>
-                                    <i ng-if="cell.direction == 'EAST'" class="material-icons">arrow_forward</i>
-
+                                    <img ng-src="{{'content/images/turtles/turtle' + getPlayerNumber(cell) + 'transparent.png'}}"
+                                         width="48"
+                                         ng-class="cell.direction"/>
                                 </div>
 
                                 <div ng-if="cell.panelName != 'PLAYER' && cell.panelName != 'EMPTY'" class="playerContainer">
-                                    <img ng-src="{{'content/images/' + (cell.panelName) + '.png'}}" width="40"/>
+                                    <img ng-src="{{'content/images/' + (cell.panelName) + '.png'}}" width="48"/>
                                 </div>
 
 
@@ -160,7 +157,7 @@
                 <md-card class="move-container">
                     <div ng-repeat="record in currentGame.moveRecords  | orderBy: reverse:true"
                          id="moveRecords{{record.turnNumber}}">
-                        <b>Turn {{record.turnNumber}}. {{record.playerName}} play {{ record.title }}</b><br/>
+                        <b>Turn {{record.turnNumber}}. {{record.playerName}} play {{ record.title }} at {{ displayRecordDate(record) }}</b><br/>
                         <div ng-repeat="desc in record.description track by $index">
                             {{desc}}
                         </div>
@@ -202,7 +199,7 @@
         background-position: top 34px left 44px;
     }
     .background-home {
-        background:url(content/images/background.jpeg) 0 0 no-repeat;
+        background:url(content/images/background_home.jpeg) 0 0 no-repeat;
     }
     .background {
         min-height: 760px;
@@ -216,7 +213,6 @@
     }
     .indexCell {
         text-align: center;
-
     }
     .firstLine {
         height: 47px !important;
@@ -295,5 +291,19 @@
         margin-bottom: 0px;
     }
 
+    .WEST {
+        transform: rotate(90deg);
+    }
+    .NORTH {
+        transform: rotate(180deg);
+    }
+    .EAST {
+        transform: rotate(270deg);
+    }
+    @media (max-width: 992px) {
+      .move-container {
+         position: relative;
+      }
+    }
 
 </style>
