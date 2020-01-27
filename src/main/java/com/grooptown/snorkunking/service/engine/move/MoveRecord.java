@@ -56,6 +56,10 @@ public class MoveRecord {
         this.numberOfCardFold = numberOfCardFold;
     }
 
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
     public Date getDate() {
         return date;
     }
