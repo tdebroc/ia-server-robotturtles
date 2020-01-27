@@ -339,10 +339,6 @@
         $scope.clickOnCardInHand = function(cardIndex, playerIndex) {
             var card = $scope.currentGame.players[playerIndex].handCards[cardIndex];
             if ($scope.steps.chooseCardsStep) {
-                if ($scope.currentProgram.length + $scope.currentGame.players[playerIndex].program.length >= 5) {
-                    alert("You already have 5 cards  in your program.");
-                    return;
-                }
                 $scope.currentGame.players[playerIndex].handCards.splice(cardIndex, 1);
                 $scope.currentProgram.push(card);
             } else if ($scope.steps.foldCardsStep) {

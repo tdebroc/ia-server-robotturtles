@@ -47,17 +47,6 @@
 
 
                 <div ng-if="$index == currentGame.currentIdPlayerTurn && isCurrentPlayer(currentGame.idGame, currentGame.currentIdPlayerTurn)  && !currentGame.finished && currentGame.started">
-
-                    <!--
-                    It's your Turn ! Choose your action:
-                    <md-input-container>
-                        <label>Move</label>
-                        <input ng-model="moveEntry" placehoder="1;BYL;BB" id="moveEntry"/>
-                    </md-input-container>
-                    <md-button class="md-fab md-primary md-hue-2" ng-click="sendMove($index)">
-                        <i class="material-icons moveUp">play_arrow</i>
-                    </md-button>
-                    -->
                     It's Your Turn to play !
                     <div ng-if="steps.chooseMoveStep">
                         Choose Your Move:
@@ -193,29 +182,6 @@
         padding: 4px;
         min-width: 50px;
     }
-     .oxygenText {
-        position: absolute;
-        text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
-        color: white;
-        top: 17px;
-        left: 18px;
-        font-size: 23px;
-    }
-    .chestContainer {
-        position: relative;
-        height: 50px;
-    }
-    .chestContainer img {
-        position: absolute;
-    }
-    .chestContainer span {
-        position: absolute;
-        text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
-        color: white;
-        top: 15px;
-        left: 15px;
-        font-size: 21px;
-    }
     td {
         font-weight: bold
         color: white;
@@ -227,21 +193,7 @@
         margin: 5px;
         border-radius: 5px;
     }
-    .moveUp {
-        margin-top: 3px;
-        margin-left: -3px;
-        font-size: 50px !important;
-    }
-    .moveDown {
-        margin-top: 6px;
-        margin-left: -3px;
-        font-size: 50px !important;
-    }
-    .movePick {
-        margin-top: 7px;
-        margin-left: 2px;
-        font-size: 42px !important;
-    }
+
     .selectedGame {
         background-color: rgb(220,220,220);
     }
@@ -267,7 +219,7 @@
 
     }
     .firstLine {
-        height: 46px !important;
+        height: 47px !important;
     }
     .otherLines {
         height: 58px;

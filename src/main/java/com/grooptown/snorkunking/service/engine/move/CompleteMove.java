@@ -19,10 +19,6 @@ public class CompleteMove extends Move {
             System.out.println("Entry is not Valid");
             return false;
         }
-        if (game.findCurrentPlayer().program().size() + entry.length() > MAX_CARD_ALLOWED_IN_HAND) {
-            System.out.println("You'll have too many Card in your Program !");
-            return false;
-        }
         return CardService.hasEnoughCards(entry, game.findCurrentPlayer().handCards());
     }
 

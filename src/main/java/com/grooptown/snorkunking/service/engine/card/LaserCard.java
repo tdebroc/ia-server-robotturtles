@@ -27,7 +27,7 @@ public class LaserCard extends Card {
                 return;
             }
             if (game.getGrid().getPanel(nextLaserPosition).getClass().equals(WallTile.class)) {
-                game.addMoveDescription("Laser has hit a Brick Wall on " + nextLaserPosition + ". Ice Wall has no effect. \n");
+                game.addMoveDescription("Laser has hit a Brick Wall on " + nextLaserPosition + ". It has no effect. \n");
                 return;
             }
             if (game.getGrid().getPanel(nextLaserPosition).getClass().equals(Player.class)) {
