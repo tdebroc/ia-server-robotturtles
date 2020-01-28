@@ -1,5 +1,7 @@
 package com.grooptown.snorkunking.service.engine.move;
 
+import com.grooptown.snorkunking.service.engine.player.Position;
+
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -10,6 +12,10 @@ public class MoveRecord {
     private List<String> description = new LinkedList<>();
     private String playerName;
     private int numberOfCardFold;
+    private int numberOfCardAddedToProgram;
+    private String wallAddedType;
+    private int wallAddedLine;
+    private int wallAddedColumn;
     private Date date;
 
     public MoveRecord() {
@@ -62,5 +68,37 @@ public class MoveRecord {
 
     public Date getDate() {
         return date;
+    }
+
+    public int getNumberOfCardAddedToProgram() {
+        return numberOfCardAddedToProgram;
+    }
+
+    public void setNumberOfCardAddedToProgram(int numberOfCardAddedToProgram) {
+        this.numberOfCardAddedToProgram = numberOfCardAddedToProgram;
+    }
+
+    public String getWallAddedType() {
+        return wallAddedType;
+    }
+
+    public void setWallAddedType(String wallAddedType) {
+        this.wallAddedType = wallAddedType;
+    }
+
+    public int getWallAddedLine() {
+        return wallAddedLine;
+    }
+
+    public void setWallAddedLine(int wallAddedLine) {
+        this.wallAddedLine = wallAddedLine;
+    }
+
+    public int getWallAddedColumn() {
+        return wallAddedColumn;
+    }
+
+    public void setWallAddedColumn(int wallAddedColumn) {
+        this.wallAddedColumn = wallAddedColumn;
     }
 }

@@ -110,4 +110,16 @@ public class BuildWallMove extends Move {
     public String entryQuestion() {
         return "Which wall do you want to build and where ? (i.e.: 'Ice on 0-3' for line 0 and column 3, or 'Wall on 4-2')";
     }
+
+    public Tile getTileToBuild() {
+        return tileToBuild;
+    }
+
+    public int getLine() {
+        return line;
+    }
+
+    public int getColumn() {
+        return column;
+    }
 }

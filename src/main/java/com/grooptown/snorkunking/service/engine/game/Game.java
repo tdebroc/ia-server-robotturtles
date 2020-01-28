@@ -154,6 +154,15 @@ public class Game {
         moveRecord.setPlayerName(findCurrentPlayer().getPlayerName());
         moveRecord.setTitle(allMove.getMove().getClass().getSimpleName());
         moveRecord.setTurnNumber(turnCount);
+        if (allMove.getMove().getClass().equals(BuildWallMove.class)) {
+            BuildWallMove move = (BuildWallMove) allMove.getMove();
+            moveRecord.setWallAddedType(move.getTileToBuild().toString());
+            moveRecord.setWallAddedLine(move.getLine());
+            moveRecord.setWallAddedColumn(move.getColumn());
+        } else if (allMove.getMove().getClass().equals(CompleteMove.class)) {
+            CompleteMove move = (CompleteMove) allMove.getMove();
+            moveRecord.setNumberOfCardAddedToProgram(move.getCardsToAdd().size());
+        }
     }
 
     private void addToGridHistory() {

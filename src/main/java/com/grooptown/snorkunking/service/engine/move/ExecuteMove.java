@@ -20,7 +20,6 @@ public class ExecuteMove extends Move {
         for (Card card : game.findCurrentPlayer().program()) {
             game.addMoveDescription(" - Playing " + card.getCardName() + "\n");
             card.play(game);
-            game.findCurrentPlayer().addToDiscarded(card);
             if (game.findCurrentPlayer().isRubyReached()) {
                 break;
             }
