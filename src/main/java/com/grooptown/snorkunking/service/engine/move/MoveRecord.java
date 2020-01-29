@@ -13,6 +13,7 @@ public class MoveRecord {
     private String playerName;
     private int numberOfCardFold;
     private int numberOfCardAddedToProgram;
+    private List<String> cardsExecutedInProgram;
     private String wallAddedType;
     private int wallAddedLine;
     private int wallAddedColumn;
@@ -76,6 +77,14 @@ public class MoveRecord {
 
     public void setNumberOfCardAddedToProgram(int numberOfCardAddedToProgram) {
         this.numberOfCardAddedToProgram = numberOfCardAddedToProgram;
+    }
+
+    public List<String> getCardsExecutedInProgram() {
+        return cardsExecutedInProgram;
+    }
+
+    public void setCardsExecutedInProgram(List<String> cardsExecutedInProgram) {
+        this.cardsExecutedInProgram = cardsExecutedInProgram;
     }
 
     public String getWallAddedType() {

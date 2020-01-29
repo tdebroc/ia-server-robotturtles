@@ -46,6 +46,7 @@ public class Game {
     public Game() {
         // Needed For Jackson Deserialization.
     }
+
     public Game(int idGame) {
         this.idGame = idGame;
     }
@@ -162,6 +163,9 @@ public class Game {
         } else if (allMove.getMove().getClass().equals(CompleteMove.class)) {
             CompleteMove move = (CompleteMove) allMove.getMove();
             moveRecord.setNumberOfCardAddedToProgram(move.getCardsToAdd().size());
+        } else if (allMove.getMove().getClass().equals(ExecuteMove.class)) {
+            ExecuteMove move = (ExecuteMove) allMove.getMove();
+            moveRecord.setCardsExecutedInProgram(move.getCardsInProgram());
         }
     }
 
@@ -283,7 +287,7 @@ public class Game {
         return players.size() > 0 ? players.get(currentPlayerIndex) : null;
     }
 
-        public Grid getGrid() {
+    public Grid getGrid() {
         return grid;
     }
 
