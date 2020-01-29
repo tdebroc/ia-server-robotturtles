@@ -11,8 +11,11 @@ import com.grooptown.snorkunking.service.engine.tile.TileService;
 import com.grooptown.snorkunking.service.engine.tile.WallTile;
 
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static com.grooptown.snorkunking.service.engine.player.MovementService.directions;
 import static com.grooptown.snorkunking.service.engine.player.MovementService.getNextPosition;
@@ -55,16 +58,19 @@ public class BuildWallMove extends Move {
     }
 
     private boolean isBlockingRuby(Position newWallPosition) {
-        boolean isBlocked = false;
-        for (Player player : game.getPlayers()) {
-            Position playerPosition = game.getGrid().getPosition(player);
+        List<Position> playerCurrentPos = game.getPlayers().stream().map(p -> game.getGrid().getPosition(p)).collect(Collectors.toList());
+        List<Position> positionsToTest = new LinkedList<>(playerCurrentPos);
+        List<Position> playerInitPos = game.getPlayers().stream().map(Player::getInitialPosition).collect(Collectors.toList());
+        positionsToTest.addAll(playerInitPos);
+
+        for (Position position : positionsToTest) {
             Set<Position> visited = new HashSet<>();
-            boolean hasAccessToRuby = hasAccessToRuby(playerPosition, newWallPosition, visited);
+            boolean hasAccessToRuby = hasAccessToRuby(position, newWallPosition, visited);
             if (!hasAccessToRuby) {
-                isBlocked = true;
+                return true;
             }
         }
-        return isBlocked;
+        return false;
     }
 
 
