@@ -1,5 +1,6 @@
 package com.grooptown.snorkunking.service.engine.move;
 
+import com.grooptown.snorkunking.service.engine.card.Card;
 import com.grooptown.snorkunking.service.engine.player.Position;
 
 import java.util.Date;
@@ -13,7 +14,7 @@ public class MoveRecord {
     private String playerName;
     private int numberOfCardFold;
     private int numberOfCardAddedToProgram;
-    private List<String> cardsExecutedInProgram;
+    private List<Card> cardsExecutedInProgram;
     private String wallAddedType;
     private int wallAddedLine;
     private int wallAddedColumn;
@@ -79,11 +80,11 @@ public class MoveRecord {
         this.numberOfCardAddedToProgram = numberOfCardAddedToProgram;
     }
 
-    public List<String> getCardsExecutedInProgram() {
+    public List<Card> getCardsExecutedInProgram() {
         return cardsExecutedInProgram;
     }
 
-    public void setCardsExecutedInProgram(List<String> cardsExecutedInProgram) {
+    public void setCardsExecutedInProgram(List<Card> cardsExecutedInProgram) {
         this.cardsExecutedInProgram = cardsExecutedInProgram;
     }
 

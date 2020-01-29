@@ -76,12 +76,16 @@ public class Player implements Panel {
         this.cardDeck = cardDeck;
     }
 
-    public void pickCardInDeck() {
+    public void resetDeckIfEmpty() {
         if (cardDeck.getCards().size() == 0) {
             Collections.shuffle(discarded);
             cardDeck.getCards().addAll(discarded);
             discarded.clear();
         }
+    }
+
+    public void pickCardInDeck() {
+        resetDeckIfEmpty();
         if (handCards.size() >= MAX_CARD_ALLOWED_IN_HAND) {
             throw new RuntimeException("Already " + MAX_CARD_ALLOWED_IN_HAND + " handCards ...");
         }
@@ -207,5 +211,10 @@ public class Player implements Panel {
 
     public void addToDiscarded(Card card) {
         discarded.add(card);
+    }
+
+    @JsonIgnore
+    public CardDeck getCardDeck() {
+        return cardDeck;
     }
 }

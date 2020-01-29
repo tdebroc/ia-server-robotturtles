@@ -180,11 +180,13 @@ public class Game {
     }
 
     private void foldAndPickNewCards(AllMove allMove) {
-        for (Card card : findCurrentPlayer().handCards()) {
+        for (Card card : allMove.getCardToFold()) {
             findCurrentPlayer().addToDiscarded(card);
         }
         CardService.removeCardsFromHand(findCurrentPlayer().handCards(), allMove.getCardToFold());
-        while (findCurrentPlayer().handCards().size() < MAX_CARD_ALLOWED_IN_HAND) {
+        findCurrentPlayer().resetDeckIfEmpty();
+        while (findCurrentPlayer().handCards().size() < MAX_CARD_ALLOWED_IN_HAND
+                && findCurrentPlayer().getCardDeck().getCards().size() > 0) {
             findCurrentPlayer().pickCardInDeck();
         }
         moveRecords.getLast().setNumberOfCardFold(allMove.getCardToFold().size());
@@ -214,7 +216,7 @@ public class Game {
     private void initGame() {
         initGrid();
         initDecks();
-        pickCards();
+        pickInitialCards();
         initCurrentPlayerIndex();
     }
 
@@ -229,7 +231,7 @@ public class Game {
         }
     }
 
-    private void pickCards() {
+    private void pickInitialCards() {
         for (Player player : players) {
             for (int i = 0; i < MAX_CARD_ALLOWED_IN_HAND; i++) {
                 player.pickCardInDeck();

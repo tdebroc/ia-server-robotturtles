@@ -18,11 +18,19 @@ public class CardService {
         charToCards.put('Y', new YellowCard());
     }
 
+    public static String cardsToChars(List<Card> cards) {
+        return cards
+            .stream()
+            .map(c -> c.getCardName().charAt(0))
+            .map(Object::toString)
+            .collect(Collectors.joining());
+    }
+
     public static List<Card> getNewCards(String cards) {
         return cards
                 .chars()
                 .mapToObj(c -> (char) c)
-                .map(c -> charToCards.get(c))
+                .map(charToCards::get)
                 .collect(Collectors.toList());
     }
 

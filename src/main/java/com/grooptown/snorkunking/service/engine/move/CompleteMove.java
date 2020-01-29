@@ -43,4 +43,8 @@ public class CompleteMove extends Move {
     public List<Card> getCardsToAdd() {
         return cardsToAdd;
     }
+
+    public void setCardsToAdd(List<Card> cardsToAdd) {
+        this.cardsToAdd = cardsToAdd;
+    }
 }
