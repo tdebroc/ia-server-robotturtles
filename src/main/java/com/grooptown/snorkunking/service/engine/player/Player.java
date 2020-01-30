@@ -76,6 +76,11 @@ public class Player implements Panel {
         this.cardDeck = cardDeck;
     }
 
+    @JsonIgnore
+    public boolean isThereStillCardLeftToPick() {
+        return getCardDeck().getCards().size() > 0 || discarded.size() > 0;
+    }
+
     public void resetDeckIfEmpty() {
         if (cardDeck.getCards().size() == 0) {
             Collections.shuffle(discarded);

@@ -2,13 +2,14 @@ package com.grooptown.snorkunking.service.engine.move;
 
 import com.grooptown.snorkunking.service.engine.card.Card;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by thibautdebroca on 08/11/2019.
  */
 public class ExecuteMove extends Move {
-    private List<Card> cardsInProgram;
+    private List<Card> cardsInProgram = new ArrayList<>();
 
     @Override
     public boolean isValidMove(String entry) {

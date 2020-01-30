@@ -54,11 +54,11 @@ public class CardService {
         return charToCards.containsKey(c);
     }
 
-    public static boolean hasEnoughCards(String entryToVerify, List<Card> setOfCards) {
-        Set<Card> handCards = new HashSet<>(setOfCards);
+    public static boolean hasEnoughCards(String entryToVerify, List<Card> handCards) {
+        List<Card> handCardsTmp = new LinkedList<>(handCards);
         for (Card card : CardService.getNewCards(entryToVerify)) {
             boolean found = false;
-            Iterator<Card> iterator = handCards.iterator();
+            Iterator<Card> iterator = handCardsTmp.iterator();
             while (iterator.hasNext()) {
                 Card nextCard = iterator.next();
                 if (nextCard.getClass().equals(card.getClass())) {

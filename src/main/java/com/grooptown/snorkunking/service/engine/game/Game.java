@@ -184,9 +184,9 @@ public class Game {
             findCurrentPlayer().addToDiscarded(card);
         }
         CardService.removeCardsFromHand(findCurrentPlayer().handCards(), allMove.getCardToFold());
-        findCurrentPlayer().resetDeckIfEmpty();
+
         while (findCurrentPlayer().handCards().size() < MAX_CARD_ALLOWED_IN_HAND
-                && findCurrentPlayer().getCardDeck().getCards().size() > 0) {
+                && (findCurrentPlayer().isThereStillCardLeftToPick())) {
             findCurrentPlayer().pickCardInDeck();
         }
         moveRecords.getLast().setNumberOfCardFold(allMove.getCardToFold().size());
